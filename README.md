@@ -128,21 +128,12 @@ Run **Dump Camera Info** (Actions tab) for that camera. Its *CAMERA SETTINGS* an
 Tick **TvNotify Controller** in the room's *Navigator → Device Visibility*, then refresh the Navigators. The page only works inside the Control4 app, not in a desktop browser.
 </details>
 
-<details>
-<summary><b>Can it turn the TV on?</b></summary>
-
-No. TvOverlay runs on the TV, so the TV must be on (or in a state where apps keep running) to show notifications. Use the TV's own Control4 driver to switch it on first.
-</details>
-
 ## 🙏 Credits
 
 - [TvOverlay](https://github.com/gugutab/TvOverlay) by gugutab: the Android TV app that displays the notifications.
-- Drivers by **popolou** ([ThePopolou/TvNotify](https://github.com/ThePopolou/TvNotify)).
 
 > TvNotify is an independent project. It is not affiliated with or endorsed by Control4, Snap One or the TvOverlay author.
 
 ## 📄 Licence
 
 Copyright © 2026 popolou. TvNotify is free software, released under the **[GNU General Public License v3.0](LICENSE)**.
-
-You may use, change and share it, including on paid installations. If you share a changed version, it must also be released under GPL-3.0 with its source. It comes with no warranty.
