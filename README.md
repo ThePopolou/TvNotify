@@ -25,14 +25,16 @@
 
 TvNotify is a pair of Control4 DriverWorks drivers for the [TvOverlay](https://github.com/gugutab/TvOverlay) app on Android TV and Google TV devices.
 
-| | |
+
+| Feature | Details |
 |---|---|
-| 🔔 **Notifications & alerts** | Title, message, icon and colour, in any corner. 14 ready-made alert styles: doorbell, motion, water leak, package and more. |
-| 📷 **Camera snapshots** | Show a still or live stream from any Control4 camera, including cameras on an NVR. The camera's own address and login are read automatically. Built-in formats for Hikvision, Dahua / Amcrest, Foscam, Reolink and Axis, plus your own. |
-| 📌 **Status badges** | Small fixed badges such as *Garage open* that stay on screen until cleared, or expire on a timer. |
-| 📱 **TV Notifications page** | Send from the Control4 app on iOS and Android: one tap for saved messages, or type your own. Works in light and dark mode. |
-| 🏠 **Whole-home targeting** | One Controller for up to 12 TVs, with up to 6 subgroups such as *Upstairs* or *Kids' rooms*, and online status for each TV. |
-| ⚙️ **Programming** | Send from any event: doorbell pressed, motion detected, alarm armed. Up to 20 saved profiles, each sent with one command. |
+| 🔔&nbsp;**Notifications&nbsp;&amp;&nbsp;alerts** | Title, message, icon and colour, in any corner. 14 ready-made alert styles: doorbell, motion, water leak, package and more. |
+| 📷&nbsp;**Camera&nbsp;snapshots** | Show a still or live stream from any Control4 camera, including cameras on an NVR. The camera's own address and login are read automatically. Built-in formats for Hikvision, Dahua / Amcrest, Foscam, Reolink and Axis, plus your own. |
+| 📌&nbsp;**Status&nbsp;badges** | Small fixed badges such as *Garage open* that stay on screen until cleared, or expire on a timer. |
+| 📱&nbsp;**TV&nbsp;Notifications&nbsp;page** | Send from the Control4 app on iOS and Android: one tap for saved messages, or type your own. Works in light and dark mode. |
+| 🏠&nbsp;**Whole&#8209;home&nbsp;targeting** | One Controller for up to 12 TVs, with up to 6 subgroups such as *Upstairs* or *Kids' rooms*, and online status for each TV. |
+| ⚙️&nbsp;**Programming** | Send from any event: doorbell pressed, motion detected, alarm armed. Up to 20 saved profiles, each sent with one command. |
+
 
 ## 📸 Screenshots
 
