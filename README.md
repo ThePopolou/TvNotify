@@ -1,9 +1,9 @@
 <p align="center">
-  <img src="docs/images/hero.png" alt="TvNotify: Control4 notifications on Android TVs (illustration)" width="100%">
+  <img src="docs/images/splash.png" alt="TvNotify: Control4 notifications on Android TVs (illustration)" width="100%">
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-0.1.0%20beta-0288d1" alt="Version 0.1.0 beta">
+  <a href="../../releases/latest"><img src="https://img.shields.io/github/v/release/ThePopolou/TvNotify?label=version&color=0288d1" alt="Latest version"></a>
   <img src="https://img.shields.io/badge/Control4%20OS-3.3%2B-455a64" alt="Control4 OS 3.3+">
   <img src="https://img.shields.io/badge/requires-TvOverlay-03a9f4" alt="Requires TvOverlay">
   <a href="LICENSE"><img src="https://img.shields.io/badge/licence-GPL--3.0-c62828" alt="Licence: GPL-3.0"></a>
@@ -33,7 +33,8 @@ TvNotify is a pair of Control4 DriverWorks drivers for the [TvOverlay](https://g
 | 📌&nbsp;**Status&nbsp;badges** | Small fixed badges such as *Garage open* that stay on screen until cleared, or expire on a timer. |
 | 📱&nbsp;**TV&nbsp;Notifications&nbsp;page** | Send from the Control4 app on iOS and Android: one tap for saved messages, or type your own. Works in light and dark mode. |
 | 🏠&nbsp;**Whole&#8209;home&nbsp;targeting** | One Controller for up to 12 TVs, with up to 6 subgroups such as *Upstairs* or *Kids' rooms*, and online status for each TV. |
-| ⚙️&nbsp;**Programming** | Send from any event: doorbell pressed, motion detected, alarm armed. Up to 20 saved profiles, each sent with one command. |
+| ⚙️&nbsp;**Programming** | Send from any event: doorbell pressed, motion detected, alarm armed. Up to 20 saved profiles, each sent with one command. Events, variables, Conditionals and Loops for messages, badges and TV status. |
+| 🔄&nbsp;**Update&nbsp;check** | The drivers show when a newer release is available, in their Status and on the TV Notifications page. |
 
 
 ## 📸 Screenshots
@@ -66,10 +67,10 @@ flowchart LR
 
 ## 📦 Download
 
-Get the latest `.c4z` files from **[Releases](../../releases/latest)**.
+Download **`TvNotify_vX.Y.Z.zip`** from the latest **[release](../../releases/latest)** and unzip it. It contains both drivers, `tvnotify_android_tv.c4z` and `tvnotify_controller.c4z`.
 
 > [!IMPORTANT]
-> Rename the files to `tvnotify_android_tv.c4z` and `tvnotify_controller.c4z` before adding them in Composer. Composer identifies a driver by its file name, so updates are only recognised under the same name.
+> Keep the file names as they are. Composer identifies a driver by its file name, so updates are only recognised under the same name.
 
 ## ✅ Requirements
 
@@ -100,9 +101,26 @@ Full instructions, properties and commands are in each driver's **Documentation*
 | Room driver commands | Controller commands |
 |---|---|
 | Send Notification · Send Alert · Send Camera Notification · Send Fixed Notification · Remove Fixed Notification · Remove All Fixed Notifications · Set Overlay · Set Notification Settings · Set Settings · Set MQTT · Send Raw JSON | Send Profile · Clear Profile Badge · Send Notification · Send Alert · Send Camera Notification · Send Fixed Notification · Remove Fixed Notification · Remove All Fixed Notifications · Set Overlay · Set Notification Settings |
-| **Events:** Notification Sent · Request Failed · TV Online · TV Offline | **Events:** Member Online · Member Offline · All Members Online · Not All Members Online |
+| **Events:** Notification Sent · Request Failed · TV Online · TV Offline · Badge Shown · Badge Cleared · Badge Expired | **Events:** Member Online · Member Offline · All Members Online · Not All Members Online · Message Sent · Badge Shown · Badge Cleared · Badge Expired |
+| **Conditionals:** Badges on screen · Badge on screen with ID · Last badge ID · TV is | **Conditionals:** Last profile sent · Last badge profile · Online TVs · Online member · TVs · Badge on screen from |
 
-**Example:** *When the doorbell is pressed* → **TvNotify Controller → Send Profile → "Front door"**, or **Send Camera Notification** with the porch camera to show who's there.
+## 💡 What can you do with this driver?
+
+### 📺 Room driver (one TV)
+
+- **Motion at the back door:** *When the garden motion sensor trips* → **Living Room → TvNotify → Send Camera Notification** with the garden camera, **Output → Stream**, for a live view of what set it off.
+- **Doorbell in the kitchen:** *When the doorbell is pressed* → **Kitchen → TvNotify → Send Alert**, **Alert Type → Doorbell**.
+
+### 🏠 Controller (several TVs)
+
+- **Doorbell with camera, on every TV:** *When the doorbell is pressed* → **TvNotify Controller → Send Camera Notification** with the porch camera, to *All Members*.
+- **Washing machine finished:** *When the laundry power monitor drops below 5 W* → **Send Profile → "Washing done"** to *Upstairs TVs*.
+- **Bedtime reminder:** *Every weekday at 20:30* → **Send Profile → "Bedtime"** to the *Kids' rooms* subgroup only.
+- **Garage open badge:** *When the garage door opens* → **Send Profile → "Garage open"** (a badge). *When it closes* → **Clear Profile Badge → "Garage open"**.
+- **One tap from the Control4 app:** save "Dinner is ready" as a profile, then anyone can open **TV Notifications** in the Control4 app and tap it as a quick message to send it to every TV. No programming needed.
+- **App message plays a chime:** *When TvNotify Controller → Message Sent* and *last profile sent = 2* ("Dinner is ready") → play a dinner bell on the kitchen and lounge speakers.
+
+Conditionals are also available on Composer's **Loops** tab, for example *While badge on screen from = Profile 4* → wait 10 minutes → send a reminder.
 
 ## ❓ FAQ
 
