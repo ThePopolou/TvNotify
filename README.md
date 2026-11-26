@@ -106,12 +106,12 @@ Full instructions, properties and commands are in each driver's **Documentation*
 
 ## 💡 What can you do with this driver?
 
-### 📺 Room driver (one TV)
+### <img src="docs/images/room_driver.png" width="20" height="20" alt=""> Room driver (one TV)
 
 - **Motion at the back door:** *When the garden motion sensor trips* → **Living Room → TvNotify → Send Camera Notification** with the garden camera, **Output → Stream**, for a live view of what set it off.
 - **Doorbell in the kitchen:** *When the doorbell is pressed* → **Kitchen → TvNotify → Send Alert**, **Alert Type → Doorbell**.
 
-### 🏠 Controller (several TVs)
+### <img src="docs/images/controller.png" width="20" height="20" alt=""> Controller (several TVs)
 
 - **Doorbell with camera, on every TV:** *When the doorbell is pressed* → **TvNotify Controller → Send Camera Notification** with the porch camera, to *All Members*.
 - **Washing machine finished:** *When the laundry power monitor drops below 5 W* → **Send Profile → "Washing done"** to *Upstairs TVs*.
