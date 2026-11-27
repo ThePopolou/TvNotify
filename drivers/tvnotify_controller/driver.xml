@@ -1,0 +1,1897 @@
+<devicedata>
+  <copyright>Copyright (C) 2026 popolou. Licensed under GPL-3.0 (github.com/ThePopolou/TvNotify)</copyright>
+  <creator>popolou</creator>
+  <manufacturer>popolou</manufacturer>
+  <name>TvNotify Controller</name>
+  <model>TvNotify Controller</model>
+  <created>11/16/2026 12:00</created>
+  <modified>11/21/2026 12:00</modified>
+  <version>76</version>
+  <control>lua_gen</control>
+  <controlmethod>ip</controlmethod>
+  <driver>DriverWorks</driver>
+  <small image_source="c4z">icons/device_sm.png</small>
+  <large image_source="c4z">icons/device_lg.png</large>
+  <proxies>
+    <proxy proxybindingid="5001" name="TvNotify Controller" image_source="c4z" small_image="icons/device_sm.png" large_image="icons/device_lg.png">uibutton</proxy>
+  </proxies>
+  <capabilities>
+    <web_view_url proxybindingid="5001">controller://driver/tvnotify_controller/web/index.html</web_view_url>
+    <mobile_web_view_enabled>true</mobile_web_view_enabled>
+    <navigator_display_option proxybindingid="5001">
+      <display_icons>
+        <Icon width="70" height="70">controller://driver/tvnotify_controller/icons/device/idle_online_70.png</Icon>
+        <Icon width="90" height="90">controller://driver/tvnotify_controller/icons/device/idle_online_90.png</Icon>
+        <Icon width="300" height="300">controller://driver/tvnotify_controller/icons/device/idle_online_300.png</Icon>
+        <Icon width="512" height="512">controller://driver/tvnotify_controller/icons/device/idle_online_512.png</Icon>
+        <Icon width="1024" height="1024">controller://driver/tvnotify_controller/icons/device/idle_online_1024.png</Icon>
+        <state id="idle_online">
+          <Icon width="70" height="70">controller://driver/tvnotify_controller/icons/device/idle_online_70.png</Icon>
+          <Icon width="90" height="90">controller://driver/tvnotify_controller/icons/device/idle_online_90.png</Icon>
+          <Icon width="300" height="300">controller://driver/tvnotify_controller/icons/device/idle_online_300.png</Icon>
+          <Icon width="512" height="512">controller://driver/tvnotify_controller/icons/device/idle_online_512.png</Icon>
+          <Icon width="1024" height="1024">controller://driver/tvnotify_controller/icons/device/idle_online_1024.png</Icon>
+        </state>
+        <state id="badge_active">
+          <Icon width="70" height="70">controller://driver/tvnotify_controller/icons/device/badge_active_70.png</Icon>
+          <Icon width="90" height="90">controller://driver/tvnotify_controller/icons/device/badge_active_90.png</Icon>
+          <Icon width="300" height="300">controller://driver/tvnotify_controller/icons/device/badge_active_300.png</Icon>
+          <Icon width="512" height="512">controller://driver/tvnotify_controller/icons/device/badge_active_512.png</Icon>
+          <Icon width="1024" height="1024">controller://driver/tvnotify_controller/icons/device/badge_active_1024.png</Icon>
+        </state>
+        <state id="sent_confirm">
+          <Icon width="70" height="70">controller://driver/tvnotify_controller/icons/device/sent_confirm_70.png</Icon>
+          <Icon width="90" height="90">controller://driver/tvnotify_controller/icons/device/sent_confirm_90.png</Icon>
+          <Icon width="300" height="300">controller://driver/tvnotify_controller/icons/device/sent_confirm_300.png</Icon>
+          <Icon width="512" height="512">controller://driver/tvnotify_controller/icons/device/sent_confirm_512.png</Icon>
+          <Icon width="1024" height="1024">controller://driver/tvnotify_controller/icons/device/sent_confirm_1024.png</Icon>
+        </state>
+        <state id="partial_offline">
+          <Icon width="70" height="70">controller://driver/tvnotify_controller/icons/device/partial_offline_70.png</Icon>
+          <Icon width="90" height="90">controller://driver/tvnotify_controller/icons/device/partial_offline_90.png</Icon>
+          <Icon width="300" height="300">controller://driver/tvnotify_controller/icons/device/partial_offline_300.png</Icon>
+          <Icon width="512" height="512">controller://driver/tvnotify_controller/icons/device/partial_offline_512.png</Icon>
+          <Icon width="1024" height="1024">controller://driver/tvnotify_controller/icons/device/partial_offline_1024.png</Icon>
+        </state>
+        <state id="all_offline">
+          <Icon width="70" height="70">controller://driver/tvnotify_controller/icons/device/all_offline_70.png</Icon>
+          <Icon width="90" height="90">controller://driver/tvnotify_controller/icons/device/all_offline_90.png</Icon>
+          <Icon width="300" height="300">controller://driver/tvnotify_controller/icons/device/all_offline_300.png</Icon>
+          <Icon width="512" height="512">controller://driver/tvnotify_controller/icons/device/all_offline_512.png</Icon>
+          <Icon width="1024" height="1024">controller://driver/tvnotify_controller/icons/device/all_offline_1024.png</Icon>
+        </state>
+        <state id="muted">
+          <Icon width="70" height="70">controller://driver/tvnotify_controller/icons/device/muted_70.png</Icon>
+          <Icon width="90" height="90">controller://driver/tvnotify_controller/icons/device/muted_90.png</Icon>
+          <Icon width="300" height="300">controller://driver/tvnotify_controller/icons/device/muted_300.png</Icon>
+          <Icon width="512" height="512">controller://driver/tvnotify_controller/icons/device/muted_512.png</Icon>
+          <Icon width="1024" height="1024">controller://driver/tvnotify_controller/icons/device/muted_1024.png</Icon>
+        </state>
+      </display_icons>
+    </navigator_display_option>
+  </capabilities>
+  <config>
+    <script file="driver.lua"></script>
+    <documentation file="www/documentation.html"></documentation>
+    <properties>
+      <property>
+        <name>Driver Information</name>
+        <type>LABEL</type>
+        <default>Driver Information</default>
+      </property>
+      <property>
+        <name>Driver Version</name>
+        <type>STRING</type>
+        <default>0.1.2</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Status</name>
+        <type>STRING</type>
+        <default>No room drivers bound</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Web View Address</name>
+        <type>STRING</type>
+        <default></default>
+        <readonly>true</readonly>
+        <tooltip>The page the Controller's Experience Button opens in the Navigators.</tooltip>
+      </property>
+      <property>
+        <name>Experience Button Subtitle</name>
+        <type>LIST</type>
+        <items>
+          <item>Live Status &amp; Badges</item>
+          <item>Static (TV Notifications)</item>
+        </items>
+        <default>Live Status &amp; Badges</default>
+        <readonly>false</readonly>
+        <tooltip>Show live TV / badge status under the Experience Button icon, or a static "TV Notifications" label.</tooltip>
+      </property>
+      <property>
+        <name>TV Members</name>
+        <type>LABEL</type>
+        <default>TV Members</default>
+      </property>
+      <property>
+        <name>Number of TV Members</name>
+        <type>RANGED_INTEGER</type>
+        <minimum>1</minimum>
+        <maximum>12</maximum>
+        <default>4</default>
+        <readonly>false</readonly>
+        <tooltip>How many TV members are used. Only this many Member entries are shown.</tooltip>
+      </property>
+      <property>
+        <name>Member 1</name>
+        <type>STRING</type>
+        <default>Not bound</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Member 2</name>
+        <type>STRING</type>
+        <default>Not bound</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Member 3</name>
+        <type>STRING</type>
+        <default>Not bound</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Member 4</name>
+        <type>STRING</type>
+        <default>Not bound</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Member 5</name>
+        <type>STRING</type>
+        <default>Not bound</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Member 6</name>
+        <type>STRING</type>
+        <default>Not bound</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Member 7</name>
+        <type>STRING</type>
+        <default>Not bound</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Member 8</name>
+        <type>STRING</type>
+        <default>Not bound</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Member 9</name>
+        <type>STRING</type>
+        <default>Not bound</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Member 10</name>
+        <type>STRING</type>
+        <default>Not bound</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Member 11</name>
+        <type>STRING</type>
+        <default>Not bound</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Member 12</name>
+        <type>STRING</type>
+        <default>Not bound</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Subgroups</name>
+        <type>LABEL</type>
+        <default>Subgroups</default>
+      </property>
+      <property>
+        <name>Number of Subgroups</name>
+        <type>RANGED_INTEGER</type>
+        <minimum>0</minimum>
+        <maximum>6</maximum>
+        <default>2</default>
+        <readonly>false</readonly>
+        <tooltip>How many named subgroups are used.</tooltip>
+      </property>
+      <property>
+        <name>Subgroup 1 Name</name>
+        <type>STRING</type>
+        <default>Subgroup 1</default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Subgroup 1 Members</name>
+        <type>STRING</type>
+        <default></default>
+        <readonly>false</readonly>
+        <tooltip>Member numbers in this subgroup, separated by commas, for example 1, 3, 4.</tooltip>
+      </property>
+      <property>
+        <name>Subgroup 2 Name</name>
+        <type>STRING</type>
+        <default>Subgroup 2</default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Subgroup 2 Members</name>
+        <type>STRING</type>
+        <default></default>
+        <readonly>false</readonly>
+        <tooltip>Member numbers in this subgroup, separated by commas, for example 1, 3, 4.</tooltip>
+      </property>
+      <property>
+        <name>Subgroup 3 Name</name>
+        <type>STRING</type>
+        <default>Subgroup 3</default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Subgroup 3 Members</name>
+        <type>STRING</type>
+        <default></default>
+        <readonly>false</readonly>
+        <tooltip>Member numbers in this subgroup, separated by commas, for example 1, 3, 4.</tooltip>
+      </property>
+      <property>
+        <name>Subgroup 4 Name</name>
+        <type>STRING</type>
+        <default>Subgroup 4</default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Subgroup 4 Members</name>
+        <type>STRING</type>
+        <default></default>
+        <readonly>false</readonly>
+        <tooltip>Member numbers in this subgroup, separated by commas, for example 1, 3, 4.</tooltip>
+      </property>
+      <property>
+        <name>Subgroup 5 Name</name>
+        <type>STRING</type>
+        <default>Subgroup 5</default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Subgroup 5 Members</name>
+        <type>STRING</type>
+        <default></default>
+        <readonly>false</readonly>
+        <tooltip>Member numbers in this subgroup, separated by commas, for example 1, 3, 4.</tooltip>
+      </property>
+      <property>
+        <name>Subgroup 6 Name</name>
+        <type>STRING</type>
+        <default>Subgroup 6</default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Subgroup 6 Members</name>
+        <type>STRING</type>
+        <default></default>
+        <readonly>false</readonly>
+        <tooltip>Member numbers in this subgroup, separated by commas, for example 1, 3, 4.</tooltip>
+      </property>
+      <property>
+        <name>Profiles</name>
+        <type>LABEL</type>
+        <default>Profiles</default>
+      </property>
+      <property>
+        <name>Number of Profiles</name>
+        <type>RANGED_INTEGER</type>
+        <minimum>1</minimum>
+        <maximum>20</maximum>
+        <default>5</default>
+        <readonly>false</readonly>
+        <tooltip>How many profiles can be sent. Lowering it hides profiles but does not delete them.</tooltip>
+      </property>
+      <property>
+        <name>Profile 1 Summary</name>
+        <type>STRING</type>
+        <default>(not set up)</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Profile 2 Summary</name>
+        <type>STRING</type>
+        <default>(not set up)</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Profile 3 Summary</name>
+        <type>STRING</type>
+        <default>(not set up)</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Profile 4 Summary</name>
+        <type>STRING</type>
+        <default>(not set up)</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Profile 5 Summary</name>
+        <type>STRING</type>
+        <default>(not set up)</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Profile 6 Summary</name>
+        <type>STRING</type>
+        <default>(not set up)</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Profile 7 Summary</name>
+        <type>STRING</type>
+        <default>(not set up)</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Profile 8 Summary</name>
+        <type>STRING</type>
+        <default>(not set up)</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Profile 9 Summary</name>
+        <type>STRING</type>
+        <default>(not set up)</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Profile 10 Summary</name>
+        <type>STRING</type>
+        <default>(not set up)</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Profile 11 Summary</name>
+        <type>STRING</type>
+        <default>(not set up)</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Profile 12 Summary</name>
+        <type>STRING</type>
+        <default>(not set up)</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Profile 13 Summary</name>
+        <type>STRING</type>
+        <default>(not set up)</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Profile 14 Summary</name>
+        <type>STRING</type>
+        <default>(not set up)</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Profile 15 Summary</name>
+        <type>STRING</type>
+        <default>(not set up)</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Profile 16 Summary</name>
+        <type>STRING</type>
+        <default>(not set up)</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Profile 17 Summary</name>
+        <type>STRING</type>
+        <default>(not set up)</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Profile 18 Summary</name>
+        <type>STRING</type>
+        <default>(not set up)</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Profile 19 Summary</name>
+        <type>STRING</type>
+        <default>(not set up)</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Profile 20 Summary</name>
+        <type>STRING</type>
+        <default>(not set up)</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Profile Editor</name>
+        <type>LABEL</type>
+        <default>Profile Editor</default>
+      </property>
+      <property>
+        <name>Profile Status</name>
+        <type>STRING</type>
+        <default>Ready</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Profile to Edit</name>
+        <type>RANGED_INTEGER</type>
+        <minimum>1</minimum>
+        <maximum>20</maximum>
+        <default>1</default>
+        <readonly>false</readonly>
+        <tooltip>The profile shown in the editor below. Every change is saved to it immediately.</tooltip>
+      </property>
+      <property>
+        <name>Profile Name</name>
+        <type>STRING</type>
+        <default></default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Profile Type</name>
+        <type>LIST</type>
+        <items>
+          <item>Notification</item>
+          <item>Alert</item>
+          <item>Camera</item>
+          <item>Fixed</item>
+          <item>Set Overlay</item>
+          <item>Set Notification Settings</item>
+        </items>
+        <default>Notification</default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Profile Targets</name>
+        <type>DYNAMIC_LIST</type>
+        <items>
+          <item>All TVs</item>
+        </items>
+        <default>All TVs</default>
+        <readonly>false</readonly>
+        <tooltip>Who the profile is sent to: All TVs, one connected TV or a subgroup, listed by name. The list follows TV and subgroup renames.</tooltip>
+      </property>
+      <property>
+        <name>Title</name>
+        <type>STRING</type>
+        <default></default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Message</name>
+        <type>STRING</type>
+        <default></default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Source</name>
+        <type>STRING</type>
+        <default></default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Alert Type</name>
+        <type>LIST</type>
+        <items>
+          <item>Information</item>
+          <item>Success</item>
+          <item>Warning</item>
+          <item>Error</item>
+          <item>Doorbell</item>
+          <item>Motion</item>
+          <item>Security</item>
+          <item>Fire / Smoke</item>
+          <item>Water Leak</item>
+          <item>Door Open</item>
+          <item>Garage</item>
+          <item>Phone Call</item>
+          <item>Package</item>
+          <item>Reminder</item>
+        </items>
+        <default>Information</default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Camera</name>
+        <type>DYNAMIC_LIST</type>
+        <items>
+          <item>None</item>
+        </items>
+        <default>None</default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Output</name>
+        <type>LIST</type>
+        <items>
+          <item>Snapshot</item>
+          <item>Stream</item>
+          <item>Snapshot + Stream</item>
+        </items>
+        <default>Snapshot</default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Camera Vendor</name>
+        <type>LIST</type>
+        <items>
+          <item>Use Default</item>
+          <item>Auto Detect</item>
+          <item>Hikvision NVR</item>
+          <item>Hikvision Camera</item>
+          <item>Dahua / Amcrest</item>
+          <item>Foscam</item>
+          <item>Reolink</item>
+          <item>Axis</item>
+        </items>
+        <default>Use Default</default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Snapshot URL</name>
+        <type>STRING</type>
+        <default></default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Stream URL</name>
+        <type>STRING</type>
+        <default></default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Image</name>
+        <type>STRING</type>
+        <default></default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Video URL</name>
+        <type>STRING</type>
+        <default></default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Large Icon</name>
+        <type>STRING</type>
+        <default></default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Small Icon</name>
+        <type>STRING</type>
+        <default></default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Small Icon Color</name>
+        <type>LIST</type>
+        <items>
+          <item>Use TV Default</item>
+          <item>Custom</item>
+        </items>
+        <default>Use TV Default</default>
+        <readonly>false</readonly>
+        <tooltip>Use TV Default = each room driver's Default Small Icon Color. Custom = the colour picked below.</tooltip>
+      </property>
+      <property>
+        <name>Small Icon Custom Color</name>
+        <type>COLOR_SELECTOR</type>
+        <default>3,169,244</default>
+        <readonly>false</readonly>
+        <tooltip>Colour picker, used when the colour above is Custom.</tooltip>
+      </property>
+      <property>
+        <name>Corner</name>
+        <type>LIST</type>
+        <items>
+          <item>Use Default</item>
+          <item>Bottom Left</item>
+          <item>Bottom Right</item>
+          <item>Top Left</item>
+          <item>Top Right</item>
+        </items>
+        <default>Use Default</default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Duration (sec)</name>
+        <type>RANGED_INTEGER</type>
+        <minimum>0</minimum>
+        <maximum>3600</maximum>
+        <default>0</default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Notification ID</name>
+        <type>STRING</type>
+        <default></default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Fixed Notification ID</name>
+        <type>STRING</type>
+        <default></default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Icon</name>
+        <type>STRING</type>
+        <default></default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Message Color</name>
+        <type>LIST</type>
+        <items>
+          <item>Use Default</item>
+          <item>Custom</item>
+        </items>
+        <default>Use Default</default>
+        <readonly>false</readonly>
+        <tooltip>Use Default = TvOverlay's white text. Custom = the colour picked below.</tooltip>
+      </property>
+      <property>
+        <name>Message Custom Color</name>
+        <type>COLOR_SELECTOR</type>
+        <default>255,255,255</default>
+        <readonly>false</readonly>
+        <tooltip>Colour picker, used when the colour above is Custom.</tooltip>
+      </property>
+      <property>
+        <name>Icon Color</name>
+        <type>LIST</type>
+        <items>
+          <item>No Tint</item>
+          <item>Custom</item>
+        </items>
+        <default>No Tint</default>
+        <readonly>false</readonly>
+        <tooltip>No Tint = the icon keeps its own colours. Custom = tint it with the colour picked below.</tooltip>
+      </property>
+      <property>
+        <name>Icon Custom Color</name>
+        <type>COLOR_SELECTOR</type>
+        <default>255,255,255</default>
+        <readonly>false</readonly>
+        <tooltip>Colour picker, used when the colour above is Custom.</tooltip>
+      </property>
+      <property>
+        <name>Border Color</name>
+        <type>LIST</type>
+        <items>
+          <item>Use Default</item>
+          <item>Custom</item>
+        </items>
+        <default>Use Default</default>
+        <readonly>false</readonly>
+        <tooltip>Use Default = TvOverlay's white border. Custom = the colour picked below.</tooltip>
+      </property>
+      <property>
+        <name>Border Custom Color</name>
+        <type>COLOR_SELECTOR</type>
+        <default>255,255,255</default>
+        <readonly>false</readonly>
+        <tooltip>Colour picker, used when the colour above is Custom.</tooltip>
+      </property>
+      <property>
+        <name>Background Color</name>
+        <type>LIST</type>
+        <items>
+          <item>Use Default</item>
+          <item>Custom</item>
+        </items>
+        <default>Use Default</default>
+        <readonly>false</readonly>
+        <tooltip>Use Default = TvOverlay's 40% black. Custom = the colour and opacity picked below.</tooltip>
+      </property>
+      <property>
+        <name>Background Custom Color</name>
+        <type>COLOR_SELECTOR</type>
+        <default>0,0,0</default>
+        <readonly>false</readonly>
+        <tooltip>Colour picker, used when the colour above is Custom.</tooltip>
+      </property>
+      <property>
+        <name>Background Opacity</name>
+        <type>LIST</type>
+        <items>
+          <item>100%</item>
+          <item>80%</item>
+          <item>60%</item>
+          <item>40%</item>
+          <item>20%</item>
+          <item>0%</item>
+        </items>
+        <default>40%</default>
+        <readonly>false</readonly>
+        <tooltip>How solid the badge background is: 100% = solid, 0% = fully transparent.</tooltip>
+      </property>
+      <property>
+        <name>Shape</name>
+        <type>LIST</type>
+        <items>
+          <item>Default</item>
+          <item>Rounded</item>
+          <item>Circle</item>
+          <item>Rectangular</item>
+        </items>
+        <default>Default</default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Expiration</name>
+        <type>STRING</type>
+        <default></default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Background Visibility</name>
+        <type>RANGED_INTEGER</type>
+        <minimum>-1</minimum>
+        <maximum>95</maximum>
+        <default>-1</default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Clock Visibility</name>
+        <type>RANGED_INTEGER</type>
+        <minimum>-1</minimum>
+        <maximum>95</maximum>
+        <default>-1</default>
+        <readonly>false</readonly>
+        <tooltip>Visibility of TvOverlay's clock, 0 (hidden) to 95. -1 = leave unchanged. At 0, badges are hidden too unless Fixed Notification Visibility is set.</tooltip>
+      </property>
+      <property>
+        <name>Hot Corner</name>
+        <type>LIST</type>
+        <items>
+          <item>Unchanged</item>
+          <item>Bottom Left</item>
+          <item>Bottom Right</item>
+          <item>Top Left</item>
+          <item>Top Right</item>
+        </items>
+        <default>Unchanged</default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Display Notifications</name>
+        <type>LIST</type>
+        <items>
+          <item>Unchanged</item>
+          <item>On</item>
+          <item>Off</item>
+        </items>
+        <default>Unchanged</default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Display Fixed Notifications</name>
+        <type>LIST</type>
+        <items>
+          <item>Unchanged</item>
+          <item>On</item>
+          <item>Off</item>
+        </items>
+        <default>Unchanged</default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Layout Name</name>
+        <type>STRING</type>
+        <default></default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Notification Duration (sec)</name>
+        <type>RANGED_INTEGER</type>
+        <minimum>-1</minimum>
+        <maximum>3600</maximum>
+        <default>-1</default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Fixed Notification Visibility</name>
+        <type>RANGED_INTEGER</type>
+        <minimum>-2</minimum>
+        <maximum>95</maximum>
+        <default>-2</default>
+        <readonly>false</readonly>
+        <tooltip>Visibility of badges, 0 to 95. -1 = same as the clock (TvOverlay's default). -2 = leave unchanged.</tooltip>
+      </property>
+      <property>
+        <name>Diagnostics</name>
+        <type>LABEL</type>
+        <default>Diagnostics</default>
+      </property>
+      <property>
+        <name>Debug Mode</name>
+        <type>LIST</type>
+        <items>
+          <item>Off</item>
+          <item>Print</item>
+          <item>Log</item>
+          <item>Print and Log</item>
+        </items>
+        <default>Off</default>
+        <readonly>false</readonly>
+      </property>
+    </properties>
+    <actions>
+      <action>
+        <name>Refresh Camera List</name>
+        <command>REFRESH_CAMERA_LIST</command>
+        <sort_order>0</sort_order>
+      </action>
+      <action>
+        <name>Copy Profile Being Edited To Next Empty Slot</name>
+        <command>COPY_PROFILE</command>
+        <sort_order>1</sort_order>
+      </action>
+      <action>
+        <name>Delete Profile Being Edited (press twice)</name>
+        <command>DELETE_PROFILE</command>
+        <sort_order>2</sort_order>
+      </action>
+      <action>
+        <name>Delete All Profiles (press twice)</name>
+        <command>DELETE_ALL_PROFILES</command>
+        <sort_order>3</sort_order>
+      </action>
+      <action>
+        <name>Check Connection Of All</name>
+        <command>CHECK_CONNECTION</command>
+        <sort_order>4</sort_order>
+      </action>
+      <action>
+        <name>Repeat Last Notification On All</name>
+        <command>REPEAT_LAST</command>
+        <sort_order>5</sort_order>
+      </action>
+      <action>
+        <name>Overlay Background Off</name>
+        <command>BACKGROUND_OFF</command>
+        <sort_order>6</sort_order>
+      </action>
+      <action>
+        <name>Remove All Fixed Notifications</name>
+        <command>REMOVE_ALL_FIXED</command>
+        <sort_order>7</sort_order>
+      </action>
+      <action>
+        <name>Remove Test Fixed Notification From All</name>
+        <command>REMOVE_TEST_FIXED</command>
+        <sort_order>8</sort_order>
+      </action>
+      <action>
+        <name>Send Test Fixed Notification To All</name>
+        <command>TEST_FIXED</command>
+        <sort_order>9</sort_order>
+      </action>
+      <action>
+        <name>Send Test Notification To All</name>
+        <command>TEST_NOTIFICATION</command>
+        <sort_order>10</sort_order>
+      </action>
+    </actions>
+    <commands>
+      <command>
+        <name>Send Profile</name>
+        <description>Send Profile on NAME: Profile PARAM1</description>
+        <params>
+          <param>
+            <name>Profile</name>
+            <type>RANGED_INTEGER</type>
+            <minimum>1</minimum>
+            <maximum>20</maximum>
+            <default>1</default>
+          </param>
+        </params>
+      </command>
+      <command>
+        <name>Clear Profile Badge</name>
+        <description>Clear Profile Badge on NAME: Profile PARAM1</description>
+        <params>
+          <param>
+            <name>Profile</name>
+            <type>RANGED_INTEGER</type>
+            <minimum>1</minimum>
+            <maximum>20</maximum>
+            <default>1</default>
+          </param>
+        </params>
+      </command>
+      <command>
+        <name>Send Notification</name>
+        <description>Send Notification on NAME to PARAM2: "PARAM1" (Title: PARAM3)</description>
+        <params>
+          <param>
+            <name>Description</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Targets</name>
+            <type>LIST</type>
+            <items>
+              <item>All Members</item>
+              <item>Member 1</item>
+              <item>Member 2</item>
+              <item>Member 3</item>
+              <item>Member 4</item>
+              <item>Member 5</item>
+              <item>Member 6</item>
+              <item>Member 7</item>
+              <item>Member 8</item>
+              <item>Member 9</item>
+              <item>Member 10</item>
+              <item>Member 11</item>
+              <item>Member 12</item>
+              <item>Subgroup 1</item>
+              <item>Subgroup 2</item>
+              <item>Subgroup 3</item>
+              <item>Subgroup 4</item>
+              <item>Subgroup 5</item>
+              <item>Subgroup 6</item>
+            </items>
+            <default>All Members</default>
+          </param>
+          <param>
+            <name>Title</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Message</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Source</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Image</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Video URL</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Large Icon</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Small Icon</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Small Icon Color</name>
+            <type>LIST</type>
+            <items>
+              <item>Use TV Default</item>
+              <item>Custom</item>
+            </items>
+            <default>Use TV Default</default>
+          </param>
+          <param>
+            <name>Small Icon Custom Color</name>
+            <type>COLOR_SELECTOR</type>
+            <default>3,169,244</default>
+          </param>
+          <param>
+            <name>Corner</name>
+            <type>LIST</type>
+            <items>
+              <item>Use Default</item>
+              <item>Bottom Left</item>
+              <item>Bottom Right</item>
+              <item>Top Left</item>
+              <item>Top Right</item>
+            </items>
+            <default>Use Default</default>
+          </param>
+          <param>
+            <name>Duration (sec)</name>
+            <type>RANGED_INTEGER</type>
+            <minimum>0</minimum>
+            <maximum>3600</maximum>
+            <default>0</default>
+          </param>
+          <param>
+            <name>Notification ID</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+        </params>
+      </command>
+      <command>
+        <name>Send Alert</name>
+        <description>Send Alert on NAME to PARAM2: "PARAM1" (Title: PARAM4)</description>
+        <params>
+          <param>
+            <name>Description</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Targets</name>
+            <type>LIST</type>
+            <items>
+              <item>All Members</item>
+              <item>Member 1</item>
+              <item>Member 2</item>
+              <item>Member 3</item>
+              <item>Member 4</item>
+              <item>Member 5</item>
+              <item>Member 6</item>
+              <item>Member 7</item>
+              <item>Member 8</item>
+              <item>Member 9</item>
+              <item>Member 10</item>
+              <item>Member 11</item>
+              <item>Member 12</item>
+              <item>Subgroup 1</item>
+              <item>Subgroup 2</item>
+              <item>Subgroup 3</item>
+              <item>Subgroup 4</item>
+              <item>Subgroup 5</item>
+              <item>Subgroup 6</item>
+            </items>
+            <default>All Members</default>
+          </param>
+          <param>
+            <name>Alert Type</name>
+            <type>LIST</type>
+            <items>
+              <item>Information</item>
+              <item>Success</item>
+              <item>Warning</item>
+              <item>Error</item>
+              <item>Doorbell</item>
+              <item>Motion</item>
+              <item>Security</item>
+              <item>Fire / Smoke</item>
+              <item>Water Leak</item>
+              <item>Door Open</item>
+              <item>Garage</item>
+              <item>Phone Call</item>
+              <item>Package</item>
+              <item>Reminder</item>
+            </items>
+            <default>Information</default>
+          </param>
+          <param>
+            <name>Title</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Message</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Corner</name>
+            <type>LIST</type>
+            <items>
+              <item>Use Default</item>
+              <item>Bottom Left</item>
+              <item>Bottom Right</item>
+              <item>Top Left</item>
+              <item>Top Right</item>
+            </items>
+            <default>Use Default</default>
+          </param>
+          <param>
+            <name>Duration (sec)</name>
+            <type>RANGED_INTEGER</type>
+            <minimum>0</minimum>
+            <maximum>3600</maximum>
+            <default>0</default>
+          </param>
+          <param>
+            <name>Notification ID</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+        </params>
+      </command>
+      <command>
+        <name>Send Camera Notification</name>
+        <description>Send Camera Notification on NAME to PARAM2: "PARAM1" (Title: PARAM3)</description>
+        <params>
+          <param>
+            <name>Description</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Targets</name>
+            <type>LIST</type>
+            <items>
+              <item>All Members</item>
+              <item>Member 1</item>
+              <item>Member 2</item>
+              <item>Member 3</item>
+              <item>Member 4</item>
+              <item>Member 5</item>
+              <item>Member 6</item>
+              <item>Member 7</item>
+              <item>Member 8</item>
+              <item>Member 9</item>
+              <item>Member 10</item>
+              <item>Member 11</item>
+              <item>Member 12</item>
+              <item>Subgroup 1</item>
+              <item>Subgroup 2</item>
+              <item>Subgroup 3</item>
+              <item>Subgroup 4</item>
+              <item>Subgroup 5</item>
+              <item>Subgroup 6</item>
+            </items>
+            <default>All Members</default>
+          </param>
+          <param>
+            <name>Title</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Message</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Camera</name>
+            <type>DEVICE_SELECTOR</type>
+            <items>
+              <item>camera.c4i</item>
+            </items>
+            <multiselect>false</multiselect>
+          </param>
+          <param>
+            <name>Output</name>
+            <type>LIST</type>
+            <items>
+              <item>Snapshot</item>
+              <item>Stream</item>
+              <item>Snapshot + Stream</item>
+            </items>
+            <default>Snapshot</default>
+          </param>
+          <param>
+            <name>Camera Vendor</name>
+            <type>LIST</type>
+            <items>
+              <item>Use Default</item>
+              <item>Auto Detect</item>
+              <item>Hikvision NVR</item>
+              <item>Hikvision Camera</item>
+              <item>Dahua / Amcrest</item>
+              <item>Foscam</item>
+              <item>Reolink</item>
+              <item>Axis</item>
+            </items>
+            <default>Use Default</default>
+          </param>
+          <param>
+            <name>NVR/Camera Username</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>NVR/Camera Password</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Snapshot URL</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Stream URL</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Corner</name>
+            <type>LIST</type>
+            <items>
+              <item>Use Default</item>
+              <item>Bottom Left</item>
+              <item>Bottom Right</item>
+              <item>Top Left</item>
+              <item>Top Right</item>
+            </items>
+            <default>Use Default</default>
+          </param>
+          <param>
+            <name>Duration (sec)</name>
+            <type>RANGED_INTEGER</type>
+            <minimum>0</minimum>
+            <maximum>3600</maximum>
+            <default>0</default>
+          </param>
+          <param>
+            <name>Notification ID</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+        </params>
+      </command>
+      <command>
+        <name>Send Fixed Notification</name>
+        <description>Send Fixed Notification on NAME to PARAM2: "PARAM1" (Message: PARAM4)</description>
+        <params>
+          <param>
+            <name>Description</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Targets</name>
+            <type>LIST</type>
+            <items>
+              <item>All Members</item>
+              <item>Member 1</item>
+              <item>Member 2</item>
+              <item>Member 3</item>
+              <item>Member 4</item>
+              <item>Member 5</item>
+              <item>Member 6</item>
+              <item>Member 7</item>
+              <item>Member 8</item>
+              <item>Member 9</item>
+              <item>Member 10</item>
+              <item>Member 11</item>
+              <item>Member 12</item>
+              <item>Subgroup 1</item>
+              <item>Subgroup 2</item>
+              <item>Subgroup 3</item>
+              <item>Subgroup 4</item>
+              <item>Subgroup 5</item>
+              <item>Subgroup 6</item>
+            </items>
+            <default>All Members</default>
+          </param>
+          <param>
+            <name>Fixed Notification ID</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Message</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Icon</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Message Color</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Icon Color</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Border Color</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Background Color</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Shape</name>
+            <type>LIST</type>
+            <items>
+              <item>Default</item>
+              <item>Rounded</item>
+              <item>Circle</item>
+              <item>Rectangular</item>
+            </items>
+            <default>Default</default>
+          </param>
+          <param>
+            <name>Expiration</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+        </params>
+      </command>
+      <command>
+        <name>Remove Fixed Notification</name>
+        <description>Remove Fixed Notification on NAME to PARAM2: "PARAM1" (Fixed Notification ID: PARAM3)</description>
+        <params>
+          <param>
+            <name>Description</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Targets</name>
+            <type>LIST</type>
+            <items>
+              <item>All Members</item>
+              <item>Member 1</item>
+              <item>Member 2</item>
+              <item>Member 3</item>
+              <item>Member 4</item>
+              <item>Member 5</item>
+              <item>Member 6</item>
+              <item>Member 7</item>
+              <item>Member 8</item>
+              <item>Member 9</item>
+              <item>Member 10</item>
+              <item>Member 11</item>
+              <item>Member 12</item>
+              <item>Subgroup 1</item>
+              <item>Subgroup 2</item>
+              <item>Subgroup 3</item>
+              <item>Subgroup 4</item>
+              <item>Subgroup 5</item>
+              <item>Subgroup 6</item>
+            </items>
+            <default>All Members</default>
+          </param>
+          <param>
+            <name>Fixed Notification ID</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+        </params>
+      </command>
+      <command>
+        <name>Remove All Fixed Notifications</name>
+        <description>Remove All Fixed Notifications on NAME to PARAM2: "PARAM1"</description>
+        <params>
+          <param>
+            <name>Description</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Targets</name>
+            <type>LIST</type>
+            <items>
+              <item>All Members</item>
+              <item>Member 1</item>
+              <item>Member 2</item>
+              <item>Member 3</item>
+              <item>Member 4</item>
+              <item>Member 5</item>
+              <item>Member 6</item>
+              <item>Member 7</item>
+              <item>Member 8</item>
+              <item>Member 9</item>
+              <item>Member 10</item>
+              <item>Member 11</item>
+              <item>Member 12</item>
+              <item>Subgroup 1</item>
+              <item>Subgroup 2</item>
+              <item>Subgroup 3</item>
+              <item>Subgroup 4</item>
+              <item>Subgroup 5</item>
+              <item>Subgroup 6</item>
+            </items>
+            <default>All Members</default>
+          </param>
+        </params>
+      </command>
+      <command>
+        <name>Set Overlay</name>
+        <description>Set Overlay on NAME to PARAM2: "PARAM1"</description>
+        <params>
+          <param>
+            <name>Description</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Targets</name>
+            <type>LIST</type>
+            <items>
+              <item>All Members</item>
+              <item>Member 1</item>
+              <item>Member 2</item>
+              <item>Member 3</item>
+              <item>Member 4</item>
+              <item>Member 5</item>
+              <item>Member 6</item>
+              <item>Member 7</item>
+              <item>Member 8</item>
+              <item>Member 9</item>
+              <item>Member 10</item>
+              <item>Member 11</item>
+              <item>Member 12</item>
+              <item>Subgroup 1</item>
+              <item>Subgroup 2</item>
+              <item>Subgroup 3</item>
+              <item>Subgroup 4</item>
+              <item>Subgroup 5</item>
+              <item>Subgroup 6</item>
+            </items>
+            <default>All Members</default>
+          </param>
+          <param>
+            <name>Background Visibility</name>
+            <type>RANGED_INTEGER</type>
+            <minimum>-1</minimum>
+            <maximum>95</maximum>
+            <default>-1</default>
+          </param>
+          <param>
+            <name>Clock Visibility</name>
+            <type>RANGED_INTEGER</type>
+            <minimum>-1</minimum>
+            <maximum>95</maximum>
+            <default>-1</default>
+          </param>
+          <param>
+            <name>Hot Corner</name>
+            <type>LIST</type>
+            <items>
+              <item>Unchanged</item>
+              <item>Bottom Left</item>
+              <item>Bottom Right</item>
+              <item>Top Left</item>
+              <item>Top Right</item>
+            </items>
+            <default>Unchanged</default>
+          </param>
+        </params>
+      </command>
+      <command>
+        <name>Set Notification Settings</name>
+        <description>Set Notification Settings on NAME to PARAM2: "PARAM1"</description>
+        <params>
+          <param>
+            <name>Description</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Targets</name>
+            <type>LIST</type>
+            <items>
+              <item>All Members</item>
+              <item>Member 1</item>
+              <item>Member 2</item>
+              <item>Member 3</item>
+              <item>Member 4</item>
+              <item>Member 5</item>
+              <item>Member 6</item>
+              <item>Member 7</item>
+              <item>Member 8</item>
+              <item>Member 9</item>
+              <item>Member 10</item>
+              <item>Member 11</item>
+              <item>Member 12</item>
+              <item>Subgroup 1</item>
+              <item>Subgroup 2</item>
+              <item>Subgroup 3</item>
+              <item>Subgroup 4</item>
+              <item>Subgroup 5</item>
+              <item>Subgroup 6</item>
+            </items>
+            <default>All Members</default>
+          </param>
+          <param>
+            <name>Display Notifications</name>
+            <type>LIST</type>
+            <items>
+              <item>Unchanged</item>
+              <item>On</item>
+              <item>Off</item>
+            </items>
+            <default>Unchanged</default>
+          </param>
+          <param>
+            <name>Display Fixed Notifications</name>
+            <type>LIST</type>
+            <items>
+              <item>Unchanged</item>
+              <item>On</item>
+              <item>Off</item>
+            </items>
+            <default>Unchanged</default>
+          </param>
+          <param>
+            <name>Layout Name</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Notification Duration (sec)</name>
+            <type>RANGED_INTEGER</type>
+            <minimum>-1</minimum>
+            <maximum>3600</maximum>
+            <default>-1</default>
+          </param>
+          <param>
+            <name>Fixed Notification Visibility</name>
+            <type>RANGED_INTEGER</type>
+            <minimum>-2</minimum>
+            <maximum>95</maximum>
+            <default>-2</default>
+          </param>
+        </params>
+      </command>
+    </commands>
+  </config>
+  <composer_categories>
+    <category>Audio/Video</category>
+  </composer_categories>
+  <events>
+    <event>
+      <id>1</id>
+      <name>Member Online</name>
+      <description>When a member TV comes online</description>
+    </event>
+    <event>
+      <id>2</id>
+      <name>Member Offline</name>
+      <description>When a member TV goes offline</description>
+    </event>
+    <event>
+      <id>3</id>
+      <name>All Members Online</name>
+      <description>When every connected member TV is online</description>
+    </event>
+    <event>
+      <id>4</id>
+      <name>Not All Members Online</name>
+      <description>When at least one connected member TV goes offline</description>
+    </event>
+    <event>
+      <id>5</id>
+      <name>Message Sent</name>
+      <description>When a message is sent from the TV Notifications page, a profile or programming</description>
+    </event>
+    <event>
+      <id>6</id>
+      <name>Badge Shown</name>
+      <description>When a profile's badge appears on-screen</description>
+    </event>
+    <event>
+      <id>7</id>
+      <name>Badge Cleared</name>
+      <description>When a profile's badge is removed (manually, from the TV Notifications page, by programming or on expiry)</description>
+    </event>
+    <event>
+      <id>8</id>
+      <name>Badge Expired</name>
+      <description>When a profile's badge is removed because its Expiration runs out (Badge Cleared fires too)</description>
+    </event>
+  </events>
+  <conditionals>
+    <conditional>
+      <id>0</id>
+      <name>LAST_PROFILE_SENT</name>
+      <type>NUMBER</type>
+      <condition_statement>Last profile sent</condition_statement>
+      <description>NAME last profile sent LOGIC INTEGER</description>
+      <minimum>0</minimum>
+      <maximum>20</maximum>
+      <sort_order>1</sort_order>
+    </conditional>
+    <conditional>
+      <id>1</id>
+      <name>LAST_BADGE_PROFILE</name>
+      <type>NUMBER</type>
+      <condition_statement>Last badge profile</condition_statement>
+      <description>NAME last badge profile LOGIC INTEGER</description>
+      <minimum>0</minimum>
+      <maximum>20</maximum>
+      <sort_order>2</sort_order>
+    </conditional>
+    <conditional>
+      <id>4</id>
+      <name>ONLINE_COUNT</name>
+      <type>NUMBER</type>
+      <condition_statement>Online TVs</condition_statement>
+      <description>NAME online TVs LOGIC INTEGER</description>
+      <minimum>0</minimum>
+      <maximum>12</maximum>
+      <sort_order>3</sort_order>
+    </conditional>
+    <conditional>
+      <id>2</id>
+      <name>MEMBER_ONLINE</name>
+      <type>LIST</type>
+      <condition_statement>Online member</condition_statement>
+      <description>NAME online member LOGIC STRING</description>
+      <items>
+        <item>Member 1</item>
+        <item>Member 2</item>
+        <item>Member 3</item>
+        <item>Member 4</item>
+        <item>Member 5</item>
+        <item>Member 6</item>
+        <item>Member 7</item>
+        <item>Member 8</item>
+        <item>Member 9</item>
+        <item>Member 10</item>
+        <item>Member 11</item>
+        <item>Member 12</item>
+      </items>
+      <sort_order>4</sort_order>
+    </conditional>
+    <conditional>
+      <id>3</id>
+      <name>ALL_ONLINE</name>
+      <type>LIST</type>
+      <condition_statement>TVs</condition_statement>
+      <description>NAME TVs LOGIC STRING</description>
+      <items>
+        <item>All online</item>
+        <item>Not all online</item>
+      </items>
+      <sort_order>5</sort_order>
+    </conditional>
+    <conditional>
+      <id>5</id>
+      <name>PROFILE_BADGE_ON</name>
+      <type>LIST</type>
+      <condition_statement>Badge on screen from</condition_statement>
+      <description>NAME badge on screen from LOGIC STRING</description>
+      <items>
+        <item>Profile 1</item>
+        <item>Profile 2</item>
+        <item>Profile 3</item>
+        <item>Profile 4</item>
+        <item>Profile 5</item>
+        <item>Profile 6</item>
+        <item>Profile 7</item>
+        <item>Profile 8</item>
+        <item>Profile 9</item>
+        <item>Profile 10</item>
+        <item>Profile 11</item>
+        <item>Profile 12</item>
+        <item>Profile 13</item>
+        <item>Profile 14</item>
+        <item>Profile 15</item>
+        <item>Profile 16</item>
+        <item>Profile 17</item>
+        <item>Profile 18</item>
+        <item>Profile 19</item>
+        <item>Profile 20</item>
+      </items>
+      <sort_order>6</sort_order>
+    </conditional>
+  </conditionals>
+  <connections>
+    <connection>
+      <id>1</id>
+      <facing>6</facing>
+      <connectionname>TV Member 1</connectionname>
+      <type>1</type>
+      <consumer>True</consumer>
+      <audiosource>False</audiosource>
+      <videosource>False</videosource>
+      <linelevel>True</linelevel>
+      <classes>
+        <class>
+          <classname>TVNOTIFY_TV</classname>
+        </class>
+      </classes>
+    </connection>
+    <connection>
+      <id>2</id>
+      <facing>6</facing>
+      <connectionname>TV Member 2</connectionname>
+      <type>1</type>
+      <consumer>True</consumer>
+      <audiosource>False</audiosource>
+      <videosource>False</videosource>
+      <linelevel>True</linelevel>
+      <classes>
+        <class>
+          <classname>TVNOTIFY_TV</classname>
+        </class>
+      </classes>
+    </connection>
+    <connection>
+      <id>3</id>
+      <facing>6</facing>
+      <connectionname>TV Member 3</connectionname>
+      <type>1</type>
+      <consumer>True</consumer>
+      <audiosource>False</audiosource>
+      <videosource>False</videosource>
+      <linelevel>True</linelevel>
+      <classes>
+        <class>
+          <classname>TVNOTIFY_TV</classname>
+        </class>
+      </classes>
+    </connection>
+    <connection>
+      <id>4</id>
+      <facing>6</facing>
+      <connectionname>TV Member 4</connectionname>
+      <type>1</type>
+      <consumer>True</consumer>
+      <audiosource>False</audiosource>
+      <videosource>False</videosource>
+      <linelevel>True</linelevel>
+      <classes>
+        <class>
+          <classname>TVNOTIFY_TV</classname>
+        </class>
+      </classes>
+    </connection>
+    <connection>
+      <id>5</id>
+      <facing>6</facing>
+      <connectionname>TV Member 5</connectionname>
+      <type>1</type>
+      <consumer>True</consumer>
+      <audiosource>False</audiosource>
+      <videosource>False</videosource>
+      <linelevel>True</linelevel>
+      <classes>
+        <class>
+          <classname>TVNOTIFY_TV</classname>
+        </class>
+      </classes>
+    </connection>
+    <connection>
+      <id>6</id>
+      <facing>6</facing>
+      <connectionname>TV Member 6</connectionname>
+      <type>1</type>
+      <consumer>True</consumer>
+      <audiosource>False</audiosource>
+      <videosource>False</videosource>
+      <linelevel>True</linelevel>
+      <classes>
+        <class>
+          <classname>TVNOTIFY_TV</classname>
+        </class>
+      </classes>
+    </connection>
+    <connection>
+      <id>7</id>
+      <facing>6</facing>
+      <connectionname>TV Member 7</connectionname>
+      <type>1</type>
+      <consumer>True</consumer>
+      <audiosource>False</audiosource>
+      <videosource>False</videosource>
+      <linelevel>True</linelevel>
+      <classes>
+        <class>
+          <classname>TVNOTIFY_TV</classname>
+        </class>
+      </classes>
+    </connection>
+    <connection>
+      <id>8</id>
+      <facing>6</facing>
+      <connectionname>TV Member 8</connectionname>
+      <type>1</type>
+      <consumer>True</consumer>
+      <audiosource>False</audiosource>
+      <videosource>False</videosource>
+      <linelevel>True</linelevel>
+      <classes>
+        <class>
+          <classname>TVNOTIFY_TV</classname>
+        </class>
+      </classes>
+    </connection>
+    <connection>
+      <id>9</id>
+      <facing>6</facing>
+      <connectionname>TV Member 9</connectionname>
+      <type>1</type>
+      <consumer>True</consumer>
+      <audiosource>False</audiosource>
+      <videosource>False</videosource>
+      <linelevel>True</linelevel>
+      <classes>
+        <class>
+          <classname>TVNOTIFY_TV</classname>
+        </class>
+      </classes>
+    </connection>
+    <connection>
+      <id>10</id>
+      <facing>6</facing>
+      <connectionname>TV Member 10</connectionname>
+      <type>1</type>
+      <consumer>True</consumer>
+      <audiosource>False</audiosource>
+      <videosource>False</videosource>
+      <linelevel>True</linelevel>
+      <classes>
+        <class>
+          <classname>TVNOTIFY_TV</classname>
+        </class>
+      </classes>
+    </connection>
+    <connection>
+      <id>11</id>
+      <facing>6</facing>
+      <connectionname>TV Member 11</connectionname>
+      <type>1</type>
+      <consumer>True</consumer>
+      <audiosource>False</audiosource>
+      <videosource>False</videosource>
+      <linelevel>True</linelevel>
+      <classes>
+        <class>
+          <classname>TVNOTIFY_TV</classname>
+        </class>
+      </classes>
+    </connection>
+    <connection>
+      <id>12</id>
+      <facing>6</facing>
+      <connectionname>TV Member 12</connectionname>
+      <type>1</type>
+      <consumer>True</consumer>
+      <audiosource>False</audiosource>
+      <videosource>False</videosource>
+      <linelevel>True</linelevel>
+      <classes>
+        <class>
+          <classname>TVNOTIFY_TV</classname>
+        </class>
+      </classes>
+    </connection>
+    <connection>
+      <id>5001</id>
+      <facing>6</facing>
+      <connectionname>UIBUTTON</connectionname>
+      <type>2</type>
+      <consumer>False</consumer>
+      <audiosource>False</audiosource>
+      <videosource>False</videosource>
+      <linelevel>False</linelevel>
+      <classes>
+        <class>
+          <classname>UIBUTTON</classname>
+        </class>
+      </classes>
+    </connection>
+  </connections>
+</devicedata>

@@ -1,0 +1,1038 @@
+<devicedata>
+  <copyright>Copyright (C) 2026 popolou. Licensed under GPL-3.0 (github.com/ThePopolou/TvNotify)</copyright>
+  <creator>popolou</creator>
+  <manufacturer>popolou</manufacturer>
+  <name>TvNotify</name>
+  <model>TvNotify for Android TV</model>
+  <created>11/16/2026 12:00</created>
+  <modified>11/21/2026 12:00</modified>
+  <version>76</version>
+  <control>lua_gen</control>
+  <controlmethod>ip</controlmethod>
+  <driver>DriverWorks</driver>
+  <small image_source="c4z">icons/device_sm.png</small>
+  <large image_source="c4z">icons/device_lg.png</large>
+  <proxies>
+    <proxy name="tvnotify_android_tv">tvnotify_android_tv</proxy>
+  </proxies>
+  <capabilities></capabilities>
+  <config>
+    <script file="driver.lua"></script>
+    <documentation file="www/documentation.html"></documentation>
+    <properties>
+      <property>
+        <name>Driver Information</name>
+        <type>LABEL</type>
+        <default>Driver Information</default>
+      </property>
+      <property>
+        <name>Driver Version</name>
+        <type>STRING</type>
+        <default>0.1.2</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Status</name>
+        <type>STRING</type>
+        <default>Not configured</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>TV Connection</name>
+        <type>LABEL</type>
+        <default>TV Connection</default>
+      </property>
+      <property>
+        <name>TV Driver</name>
+        <type>DYNAMIC_LIST</type>
+        <items>
+          <item>(none - use Manual IP Address)</item>
+        </items>
+        <default>(none - use Manual IP Address)</default>
+        <readonly>false</readonly>
+        <tooltip>The TV this driver sends to. Its IP address is read from that driver's network connection.</tooltip>
+      </property>
+      <property>
+        <name>Manual IP Address (fallback)</name>
+        <type>STRING</type>
+        <default></default>
+        <readonly>false</readonly>
+        <tooltip>Only needed when the TV's IP cannot be read from the selected TV driver.</tooltip>
+      </property>
+      <property>
+        <name>TV Port</name>
+        <type>RANGED_INTEGER</type>
+        <minimum>1</minimum>
+        <maximum>65535</maximum>
+        <default>5001</default>
+        <readonly>false</readonly>
+        <tooltip>TvOverlay's REST port on the TV (default 5001).</tooltip>
+      </property>
+      <property>
+        <name>Connection Check Interval (min)</name>
+        <type>RANGED_INTEGER</type>
+        <minimum>0</minimum>
+        <maximum>1440</maximum>
+        <default>5</default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Request Timeout (sec)</name>
+        <type>RANGED_INTEGER</type>
+        <minimum>1</minimum>
+        <maximum>30</maximum>
+        <default>5</default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Retry Attempts</name>
+        <type>RANGED_INTEGER</type>
+        <minimum>0</minimum>
+        <maximum>5</maximum>
+        <default>1</default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Notification Defaults</name>
+        <type>LABEL</type>
+        <default>Notification Defaults</default>
+      </property>
+      <property>
+        <name>Default Corner</name>
+        <type>LIST</type>
+        <items>
+          <item>Use TV Setting</item>
+          <item>Bottom Left</item>
+          <item>Bottom Right</item>
+          <item>Top Left</item>
+          <item>Top Right</item>
+        </items>
+        <default>Use TV Setting</default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Default Duration (sec)</name>
+        <type>RANGED_INTEGER</type>
+        <minimum>0</minimum>
+        <maximum>3600</maximum>
+        <default>0</default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Default Source</name>
+        <type>STRING</type>
+        <default>Control4</default>
+        <readonly>false</readonly>
+      </property>
+      <property>
+        <name>Default Small Icon Color</name>
+        <type>LIST</type>
+        <items>
+          <item>TvOverlay Default</item>
+          <item>Custom</item>
+        </items>
+        <default>TvOverlay Default</default>
+        <readonly>false</readonly>
+        <tooltip>TvOverlay Default = no tint is sent. Custom = the colour picked in Default Small Icon Custom Color, used whenever a notification uses Use TV Default.</tooltip>
+      </property>
+      <property>
+        <name>Default Small Icon Custom Color</name>
+        <type>COLOR_SELECTOR</type>
+        <default>3,169,244</default>
+        <readonly>false</readonly>
+        <tooltip>Colour picker for the default small icon tint (only shown when Default Small Icon Color is Custom).</tooltip>
+      </property>
+      <property>
+        <name>Camera Snapshots</name>
+        <type>LABEL</type>
+        <default>Camera Snapshots</default>
+      </property>
+      <property>
+        <name>Encode the Image to Base64?</name>
+        <type>LIST</type>
+        <items>
+          <item>Yes</item>
+          <item>No</item>
+        </items>
+        <default>Yes</default>
+        <readonly>false</readonly>
+        <tooltip>Yes: the driver downloads the snapshot (handles the login). No: the TV downloads it from the URL.</tooltip>
+      </property>
+      <property>
+        <name>Consecutive Popup Wait (sec)</name>
+        <type>RANGED_INTEGER</type>
+        <minimum>0</minimum>
+        <maximum>30</maximum>
+        <default>3</default>
+        <readonly>false</readonly>
+        <tooltip>How long popups sent after a camera popup wait for its snapshot, to keep their order (default 3). 0 = do not wait.</tooltip>
+      </property>
+      <property>
+        <name>Default Vendor</name>
+        <type>LIST</type>
+        <items>
+          <item>Auto Detect</item>
+          <item>Hikvision NVR</item>
+          <item>Hikvision Camera</item>
+          <item>Dahua / Amcrest</item>
+          <item>Foscam</item>
+          <item>Reolink</item>
+          <item>Axis</item>
+          <item>Other Vendor</item>
+        </items>
+        <default>Auto Detect</default>
+        <readonly>false</readonly>
+        <tooltip>Vendor used to build snapshot and stream addresses. Auto Detect = recognised from the camera / NVR driver. Each camera action can override it.</tooltip>
+      </property>
+      <property>
+        <name>Snapshot URL Format</name>
+        <type>STRING</type>
+        <default></default>
+        <readonly>false</readonly>
+        <tooltip>Snapshot address for Other Vendor. Placeholders: {ip} {port} {channel} {channel0} {nn} {code} {user} {pass}.</tooltip>
+      </property>
+      <property>
+        <name>Stream URL Format</name>
+        <type>STRING</type>
+        <default></default>
+        <readonly>false</readonly>
+        <tooltip>Live-stream address for Other Vendor. Placeholders: {ip} {port} (RTSP port) {channel} {channel0} {nn} {code} {subtype} {user} {pass}.</tooltip>
+      </property>
+      <property>
+        <name>Camera Stream</name>
+        <type>LIST</type>
+        <items>
+          <item>Main Stream</item>
+          <item>Sub Stream</item>
+          <item>Third Stream</item>
+        </items>
+        <default>Main Stream</default>
+        <readonly>false</readonly>
+        <tooltip>Which camera stream snapshots and live streams use, for every vendor. Sub and third streams are smaller and start faster.</tooltip>
+      </property>
+      <property>
+        <name>Address Method</name>
+        <type>LIST</type>
+        <items>
+          <item>Use Device's Own Settings</item>
+          <item>Specify Below</item>
+        </items>
+        <default>Use Device's Own Settings</default>
+        <readonly>false</readonly>
+        <tooltip>Use Device's Own Settings: the NVR's address and ports are taken from each camera's driver properties. Specify Below: the IP address and ports entered below are used for every camera on the NVR. Cameras not on an NVR always use their own settings.</tooltip>
+      </property>
+      <property>
+        <name>NVR/Camera IP Address</name>
+        <type>STRING</type>
+        <default></default>
+        <readonly>false</readonly>
+        <tooltip>The NVR's IP address, used for every camera on the NVR when Address Method is Specify Below.</tooltip>
+      </property>
+      <property>
+        <name>NVR/Camera HTTP Port</name>
+        <type>RANGED_INTEGER</type>
+        <minimum>1</minimum>
+        <maximum>65535</maximum>
+        <default>80</default>
+        <readonly>false</readonly>
+        <tooltip>Web port used in snapshot addresses with the NVR/Camera IP Address (default 80).</tooltip>
+      </property>
+      <property>
+        <name>NVR/Camera RTSP Port</name>
+        <type>RANGED_INTEGER</type>
+        <minimum>1</minimum>
+        <maximum>65535</maximum>
+        <default>554</default>
+        <readonly>false</readonly>
+        <tooltip>RTSP port used in live-stream addresses with the NVR/Camera IP Address (default 554).</tooltip>
+      </property>
+      <property>
+        <name>Login Method</name>
+        <type>LIST</type>
+        <items>
+          <item>Use Device's Own Credentials</item>
+          <item>Specify Below</item>
+        </items>
+        <default>Use Device's Own Credentials</default>
+        <readonly>false</readonly>
+        <tooltip>Use Device's Own Credentials: each camera's own login from its driver properties (NVRs use the NVR's login). Specify Below: one login for every camera, entered in the two fields below. Entering a Username / Password in Device Actions will override both.</tooltip>
+      </property>
+      <property>
+        <name>NVR/Camera Username</name>
+        <type>STRING</type>
+        <default></default>
+        <readonly>false</readonly>
+        <tooltip>Username for every camera when Login Method is Specify Below.</tooltip>
+      </property>
+      <property>
+        <name>NVR/Camera Password</name>
+        <type>STRING</type>
+        <default></default>
+        <readonly>false</readonly>
+        <password>true</password>
+        <tooltip>Password for every camera when Login Method is Specify Below. Shown masked.</tooltip>
+      </property>
+      <property>
+        <name>Activity</name>
+        <type>LABEL</type>
+        <default>Activity</default>
+      </property>
+      <property>
+        <name>Last Notification</name>
+        <type>STRING</type>
+        <default></default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Last Result</name>
+        <type>STRING</type>
+        <default></default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Notifications Sent</name>
+        <type>STRING</type>
+        <default>0</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Diagnostics</name>
+        <type>LABEL</type>
+        <default>Diagnostics</default>
+      </property>
+      <property>
+        <name>Debug Mode</name>
+        <type>LIST</type>
+        <items>
+          <item>Off</item>
+          <item>Print</item>
+          <item>Log</item>
+          <item>Print and Log</item>
+        </items>
+        <default>Off</default>
+        <readonly>false</readonly>
+      </property>
+    </properties>
+    <actions>
+      <action>
+        <name>Send Test Notification</name>
+        <command>TEST_NOTIFICATION</command>
+        <sort_order>0</sort_order>
+      </action>
+      <action>
+        <name>Send Test Fixed Notification</name>
+        <command>TEST_FIXED</command>
+        <sort_order>1</sort_order>
+      </action>
+      <action>
+        <name>Remove Test Fixed Notification</name>
+        <command>REMOVE_TEST_FIXED</command>
+        <sort_order>2</sort_order>
+      </action>
+      <action>
+        <name>Remove All Fixed Notifications</name>
+        <command>REMOVE_ALL_FIXED</command>
+        <sort_order>3</sort_order>
+      </action>
+      <action>
+        <name>Overlay Background Off</name>
+        <command>BACKGROUND_OFF</command>
+        <sort_order>4</sort_order>
+      </action>
+      <action>
+        <name>Repeat Last Notification</name>
+        <command>REPEAT_LAST</command>
+        <sort_order>5</sort_order>
+      </action>
+      <action>
+        <name>Check Connection</name>
+        <command>CHECK_CONNECTION</command>
+        <sort_order>6</sort_order>
+      </action>
+      <action>
+        <name>Refresh TV Driver List</name>
+        <command>REFRESH_TV_LIST</command>
+        <sort_order>7</sort_order>
+      </action>
+      <action>
+        <name>List TV and Camera Device IDs</name>
+        <command>LIST_DEVICES</command>
+        <sort_order>8</sort_order>
+      </action>
+      <action>
+        <name>Dump TV Driver Info</name>
+        <command>DUMP_TV_INFO</command>
+        <sort_order>9</sort_order>
+      </action>
+      <action>
+        <name>Dump Camera Info (first camera)</name>
+        <command>DUMP_CAMERA_INFO</command>
+        <sort_order>10</sort_order>
+      </action>
+    </actions>
+    <commands>
+      <command>
+        <name>Send Notification</name>
+        <description>Send Notification on NAME: "PARAM1" (Title: PARAM2)</description>
+        <params>
+          <param>
+            <name>Description</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Title</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Message</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Source</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Image</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Video URL</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Large Icon</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Small Icon</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Small Icon Color</name>
+            <type>LIST</type>
+            <items>
+              <item>Use TV Default</item>
+              <item>Custom</item>
+            </items>
+            <default>Use TV Default</default>
+          </param>
+          <param>
+            <name>Small Icon Custom Color</name>
+            <type>COLOR_SELECTOR</type>
+            <default>3,169,244</default>
+          </param>
+          <param>
+            <name>Corner</name>
+            <type>LIST</type>
+            <items>
+              <item>Use Default</item>
+              <item>Bottom Left</item>
+              <item>Bottom Right</item>
+              <item>Top Left</item>
+              <item>Top Right</item>
+            </items>
+            <default>Use Default</default>
+          </param>
+          <param>
+            <name>Duration (sec)</name>
+            <type>RANGED_INTEGER</type>
+            <minimum>0</minimum>
+            <maximum>3600</maximum>
+            <default>0</default>
+          </param>
+          <param>
+            <name>Notification ID</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+        </params>
+      </command>
+      <command>
+        <name>Send Alert</name>
+        <description>Send Alert on NAME: "PARAM1" (Title: PARAM3)</description>
+        <params>
+          <param>
+            <name>Description</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Alert Type</name>
+            <type>LIST</type>
+            <items>
+              <item>Information</item>
+              <item>Success</item>
+              <item>Warning</item>
+              <item>Error</item>
+              <item>Doorbell</item>
+              <item>Motion</item>
+              <item>Security</item>
+              <item>Fire / Smoke</item>
+              <item>Water Leak</item>
+              <item>Door Open</item>
+              <item>Garage</item>
+              <item>Phone Call</item>
+              <item>Package</item>
+              <item>Reminder</item>
+            </items>
+            <default>Information</default>
+          </param>
+          <param>
+            <name>Title</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Message</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Corner</name>
+            <type>LIST</type>
+            <items>
+              <item>Use Default</item>
+              <item>Bottom Left</item>
+              <item>Bottom Right</item>
+              <item>Top Left</item>
+              <item>Top Right</item>
+            </items>
+            <default>Use Default</default>
+          </param>
+          <param>
+            <name>Duration (sec)</name>
+            <type>RANGED_INTEGER</type>
+            <minimum>0</minimum>
+            <maximum>3600</maximum>
+            <default>0</default>
+          </param>
+          <param>
+            <name>Notification ID</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+        </params>
+      </command>
+      <command>
+        <name>Send Camera Notification</name>
+        <description>Send Camera Notification on NAME: "PARAM1" (Title: PARAM2)</description>
+        <params>
+          <param>
+            <name>Description</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Title</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Message</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Camera</name>
+            <type>DEVICE_SELECTOR</type>
+            <items>
+              <item>camera.c4i</item>
+            </items>
+            <multiselect>false</multiselect>
+          </param>
+          <param>
+            <name>Output</name>
+            <type>LIST</type>
+            <items>
+              <item>Snapshot</item>
+              <item>Stream</item>
+              <item>Snapshot + Stream</item>
+            </items>
+            <default>Snapshot</default>
+          </param>
+          <param>
+            <name>Camera Vendor</name>
+            <type>LIST</type>
+            <items>
+              <item>Use Default</item>
+              <item>Auto Detect</item>
+              <item>Hikvision NVR</item>
+              <item>Hikvision Camera</item>
+              <item>Dahua / Amcrest</item>
+              <item>Foscam</item>
+              <item>Reolink</item>
+              <item>Axis</item>
+            </items>
+            <default>Use Default</default>
+          </param>
+          <param>
+            <name>NVR/Camera Username</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>NVR/Camera Password</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Snapshot URL</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Stream URL</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Corner</name>
+            <type>LIST</type>
+            <items>
+              <item>Use Default</item>
+              <item>Bottom Left</item>
+              <item>Bottom Right</item>
+              <item>Top Left</item>
+              <item>Top Right</item>
+            </items>
+            <default>Use Default</default>
+          </param>
+          <param>
+            <name>Duration (sec)</name>
+            <type>RANGED_INTEGER</type>
+            <minimum>0</minimum>
+            <maximum>3600</maximum>
+            <default>0</default>
+          </param>
+          <param>
+            <name>Notification ID</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+        </params>
+      </command>
+      <command>
+        <name>Send Fixed Notification</name>
+        <description>Send Fixed Notification on NAME: "PARAM1" (Message: PARAM3)</description>
+        <params>
+          <param>
+            <name>Description</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Fixed Notification ID</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Message</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Icon</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Message Color</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Icon Color</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Border Color</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Background Color</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Shape</name>
+            <type>LIST</type>
+            <items>
+              <item>Default</item>
+              <item>Rounded</item>
+              <item>Circle</item>
+              <item>Rectangular</item>
+            </items>
+            <default>Default</default>
+          </param>
+          <param>
+            <name>Expiration</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+        </params>
+      </command>
+      <command>
+        <name>Remove Fixed Notification</name>
+        <description>Remove Fixed Notification on NAME: "PARAM1" (Fixed Notification ID: PARAM2)</description>
+        <params>
+          <param>
+            <name>Description</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Fixed Notification ID</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+        </params>
+      </command>
+      <command>
+        <name>Remove All Fixed Notifications</name>
+        <description>Remove All Fixed Notifications on NAME: "PARAM1"</description>
+        <params>
+          <param>
+            <name>Description</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+        </params>
+      </command>
+      <command>
+        <name>Set Overlay</name>
+        <description>Set Overlay on NAME: "PARAM1"</description>
+        <params>
+          <param>
+            <name>Description</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Background Visibility</name>
+            <type>RANGED_INTEGER</type>
+            <minimum>-1</minimum>
+            <maximum>95</maximum>
+            <default>-1</default>
+          </param>
+          <param>
+            <name>Clock Visibility</name>
+            <type>RANGED_INTEGER</type>
+            <minimum>-1</minimum>
+            <maximum>95</maximum>
+            <default>-1</default>
+          </param>
+          <param>
+            <name>Hot Corner</name>
+            <type>LIST</type>
+            <items>
+              <item>Unchanged</item>
+              <item>Bottom Left</item>
+              <item>Bottom Right</item>
+              <item>Top Left</item>
+              <item>Top Right</item>
+            </items>
+            <default>Unchanged</default>
+          </param>
+        </params>
+      </command>
+      <command>
+        <name>Set Notification Settings</name>
+        <description>Set Notification Settings on NAME: "PARAM1"</description>
+        <params>
+          <param>
+            <name>Description</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Display Notifications</name>
+            <type>LIST</type>
+            <items>
+              <item>Unchanged</item>
+              <item>On</item>
+              <item>Off</item>
+            </items>
+            <default>Unchanged</default>
+          </param>
+          <param>
+            <name>Display Fixed Notifications</name>
+            <type>LIST</type>
+            <items>
+              <item>Unchanged</item>
+              <item>On</item>
+              <item>Off</item>
+            </items>
+            <default>Unchanged</default>
+          </param>
+          <param>
+            <name>Layout Name</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Notification Duration (sec)</name>
+            <type>RANGED_INTEGER</type>
+            <minimum>-1</minimum>
+            <maximum>3600</maximum>
+            <default>-1</default>
+          </param>
+          <param>
+            <name>Fixed Notification Visibility</name>
+            <type>RANGED_INTEGER</type>
+            <minimum>-2</minimum>
+            <maximum>95</maximum>
+            <default>-2</default>
+          </param>
+        </params>
+      </command>
+      <command>
+        <name>Set Settings</name>
+        <description>Set Settings on NAME: "PARAM1" (Device Name: PARAM2)</description>
+        <params>
+          <param>
+            <name>Description</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Device Name</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Display Debug Info</name>
+            <type>LIST</type>
+            <items>
+              <item>Unchanged</item>
+              <item>On</item>
+              <item>Off</item>
+            </items>
+            <default>Unchanged</default>
+          </param>
+          <param>
+            <name>Pixel Shift</name>
+            <type>LIST</type>
+            <items>
+              <item>Unchanged</item>
+              <item>On</item>
+              <item>Off</item>
+            </items>
+            <default>Unchanged</default>
+          </param>
+        </params>
+      </command>
+      <command>
+        <name>Set MQTT</name>
+        <description>Set MQTT on NAME: "PARAM1" (Broker: PARAM3)</description>
+        <params>
+          <param>
+            <name>Description</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Display Status Changes</name>
+            <type>LIST</type>
+            <items>
+              <item>Unchanged</item>
+              <item>On</item>
+              <item>Off</item>
+            </items>
+            <default>Unchanged</default>
+          </param>
+          <param>
+            <name>Broker</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Port</name>
+            <type>RANGED_INTEGER</type>
+            <minimum>1</minimum>
+            <maximum>65535</maximum>
+            <default>1883</default>
+          </param>
+          <param>
+            <name>User</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Password</name>
+            <type>STRING</type>
+            <default></default>
+            <password>true</password>
+          </param>
+        </params>
+      </command>
+      <command>
+        <name>Dump Camera Info</name>
+        <description>Dump Camera Info on NAME: "PARAM1"</description>
+        <params>
+          <param>
+            <name>Description</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Camera</name>
+            <type>DEVICE_SELECTOR</type>
+            <items>
+              <item>camera.c4i</item>
+            </items>
+            <multiselect>false</multiselect>
+          </param>
+          <param>
+            <name>Camera Vendor</name>
+            <type>LIST</type>
+            <items>
+              <item>Use Default</item>
+              <item>Auto Detect</item>
+              <item>Hikvision NVR</item>
+              <item>Hikvision Camera</item>
+              <item>Dahua / Amcrest</item>
+              <item>Foscam</item>
+              <item>Reolink</item>
+              <item>Axis</item>
+            </items>
+            <default>Use Default</default>
+          </param>
+        </params>
+      </command>
+      <command>
+        <name>Send Raw JSON</name>
+        <description>Send Raw JSON on NAME: "PARAM1" (Endpoint: PARAM2)</description>
+        <params>
+          <param>
+            <name>Description</name>
+            <type>STRING</type>
+            <default></default>
+          </param>
+          <param>
+            <name>Endpoint</name>
+            <type>LIST</type>
+            <items>
+              <item>/notify</item>
+              <item>/notify_fixed</item>
+              <item>/set/overlay</item>
+              <item>/set/notifications</item>
+              <item>/set/settings</item>
+              <item>/set/mqtt</item>
+            </items>
+            <default>/notify</default>
+          </param>
+          <param>
+            <name>JSON</name>
+            <type>STRING</type>
+            <default>{}</default>
+          </param>
+        </params>
+      </command>
+    </commands>
+  </config>
+  <composer_categories>
+    <category>Audio/Video</category>
+  </composer_categories>
+  <events>
+    <event>
+      <id>1</id>
+      <name>Notification Sent</name>
+      <description>When a notification is accepted by the TV</description>
+    </event>
+    <event>
+      <id>2</id>
+      <name>Request Failed</name>
+      <description>When a request to the TV fails (no response or HTTP error)</description>
+    </event>
+    <event>
+      <id>3</id>
+      <name>TV Online</name>
+      <description>When the TV comes online</description>
+    </event>
+    <event>
+      <id>4</id>
+      <name>TV Offline</name>
+      <description>When the TV goes offline</description>
+    </event>
+    <event>
+      <id>5</id>
+      <name>Badge Shown</name>
+      <description>When a badge appears on-screen on this TV</description>
+    </event>
+    <event>
+      <id>6</id>
+      <name>Badge Cleared</name>
+      <description>When a badge is removed from this TV (manually, by programming or on expiry)</description>
+    </event>
+    <event>
+      <id>7</id>
+      <name>Badge Expired</name>
+      <description>When a badge is removed because its Expiration runs out (Badge Cleared fires too)</description>
+    </event>
+  </events>
+  <conditionals>
+    <conditional>
+      <id>2</id>
+      <name>BADGES_ON_SCREEN</name>
+      <type>NUMBER</type>
+      <condition_statement>Badges on screen</condition_statement>
+      <description>NAME badges on screen LOGIC INTEGER</description>
+      <minimum>0</minimum>
+      <maximum>50</maximum>
+      <sort_order>1</sort_order>
+    </conditional>
+    <conditional>
+      <id>1</id>
+      <name>BADGE_ON_SCREEN</name>
+      <type>STRING</type>
+      <condition_statement>Badge on screen with ID</condition_statement>
+      <description>NAME badge on screen with ID LOGIC STRING</description>
+      <sort_order>2</sort_order>
+    </conditional>
+    <conditional>
+      <id>3</id>
+      <name>LAST_BADGE_ID</name>
+      <type>STRING</type>
+      <condition_statement>Last badge ID</condition_statement>
+      <description>NAME last badge ID LOGIC STRING</description>
+      <sort_order>3</sort_order>
+    </conditional>
+    <conditional>
+      <id>0</id>
+      <name>TV_ONLINE</name>
+      <type>BOOL</type>
+      <condition_statement>TV is</condition_statement>
+      <description>NAME TV is STRING</description>
+      <true_text>Online</true_text>
+      <false_text>Offline</false_text>
+      <sort_order>4</sort_order>
+    </conditional>
+  </conditionals>
+  <connections>
+    <connection>
+      <id>1</id>
+      <facing>6</facing>
+      <connectionname>TvNotify Controller</connectionname>
+      <type>1</type>
+      <consumer>False</consumer>
+      <audiosource>False</audiosource>
+      <videosource>False</videosource>
+      <linelevel>True</linelevel>
+      <classes>
+        <class>
+          <classname>TVNOTIFY_TV</classname>
+        </class>
+      </classes>
+    </connection>
+  </connections>
+</devicedata>
