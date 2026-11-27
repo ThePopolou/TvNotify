@@ -46,13 +46,6 @@
           <Icon width="512" height="512">controller://driver/tvnotify_controller/icons/device/sent_confirm_512.png</Icon>
           <Icon width="1024" height="1024">controller://driver/tvnotify_controller/icons/device/sent_confirm_1024.png</Icon>
         </state>
-        <state id="partial_offline">
-          <Icon width="70" height="70">controller://driver/tvnotify_controller/icons/device/partial_offline_70.png</Icon>
-          <Icon width="90" height="90">controller://driver/tvnotify_controller/icons/device/partial_offline_90.png</Icon>
-          <Icon width="300" height="300">controller://driver/tvnotify_controller/icons/device/partial_offline_300.png</Icon>
-          <Icon width="512" height="512">controller://driver/tvnotify_controller/icons/device/partial_offline_512.png</Icon>
-          <Icon width="1024" height="1024">controller://driver/tvnotify_controller/icons/device/partial_offline_1024.png</Icon>
-        </state>
         <state id="all_offline">
           <Icon width="70" height="70">controller://driver/tvnotify_controller/icons/device/all_offline_70.png</Icon>
           <Icon width="90" height="90">controller://driver/tvnotify_controller/icons/device/all_offline_90.png</Icon>

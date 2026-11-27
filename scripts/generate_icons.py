@@ -141,7 +141,7 @@ def make_svg(state: str) -> str:
 
 def main():
     os.makedirs(OUT_DIR, exist_ok=True)
-    states = ["idle_online", "badge_active", "sent_confirm", "partial_offline", "all_offline", "muted"]
+    states = ["idle_online", "badge_active", "sent_confirm", "all_offline", "muted"]
     with tempfile.TemporaryDirectory() as tmp:
         for st in states:
             svg_path = os.path.join(tmp, f"{st}.svg")

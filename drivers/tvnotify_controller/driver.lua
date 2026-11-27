@@ -26,11 +26,11 @@ local MAX_MEMBERS   = 12
 local MAX_SUBGROUPS = 6
 
 -- web page bookkeeping: fixed badges this Controller put on TVs, and recent sends
-local Badges   = {}        -- ordered list: { id = "...", message = "...", members = {1, 3}, label = "Upstairs", profile = n, expiresAt = epoch or nil }
-local BadgeSeq = 0
-local Muted    = false     -- global Do Not Disturb / Mute state (persisted)
+local Badges       = {}    -- ordered list: { id = "...", message = "...", members = {1, 3}, label = "Upstairs", profile = n, expiresAt = epoch or nil }
+local BadgeSeq     = 0
+local MutedMembers = {}    -- [memberIndex] = true (persisted; whole-house mute = all bound members muted)
 local sendWebUrl           -- defined with the web view code below
-local History  = {}        -- newest first: { t = "16:31", what = "...", to = "Upstairs", n = 2 }
+local History      = {}    -- newest first: { t = "16:31", what = "...", to = "Upstairs", n = 2 }
 
 -- the TV Notifications page is updated when something it shows changes (no timed refresh of the page);
 -- assigned with the web view code below
@@ -78,7 +78,9 @@ local function messageSent(info)
               LAST_TITLE = fillTokens(info.title) or "", LAST_MESSAGE = fillTokens(info.message) or "",
               LAST_TARGETS = info.targets or "" })
     local summary = nz(info.title) or nz(info.message) or info.type or "Notification"
-    flashExperienceConfirm(summary)
+    if info.targets == "All TVs" or info.wholeHouse then
+        flashExperienceConfirm(summary)
+    end
     -- loop guard: a message sent by programming within 2 s of the last Message Sent event (i.e. by the
     -- programming that event started) updates the variables but does not fire the event again
     local now = os.time()
@@ -155,9 +157,19 @@ local function restoreBadges()
     if changed then saveBadges() end
 end
 
+local function saveMuted()
+    pcall(function() C4:PersistSetValue("MutedMembers", MutedMembers) end)
+end
+
 local function restoreMuted()
-    local ok, v = pcall(function() return C4:PersistGetValue("Muted") end)
-    if ok and type(v) == "boolean" then Muted = v end
+    local ok, v = pcall(function() return C4:PersistGetValue("MutedMembers") end)
+    if ok and type(v) == "table" then
+        MutedMembers = {}
+        for k, flag in pairs(v) do
+            local idx = tonumber(k)
+            if idx and flag == true then MutedMembers[idx] = true end
+        end
+    end
 end
 
 local function trackBadge(id, message, list, label, expiration, profile)
@@ -1152,8 +1164,25 @@ local function webTargetLabel(t)
     return targetName(t)
 end
 
+local function allBoundMuted()
+    local bound = 0
+    for i = 1, math.min(memberCount(), MAX_MEMBERS) do
+        if memberDevice(i) then
+            bound = bound + 1
+            if not MutedMembers[i] then return false end
+        end
+    end
+    return bound > 0
+end
+
 local function webState()
-    local s = { version = DRIVER_VERSION, update = updateAvailable() or "", muted = Muted,
+    local badgeCounts = {}
+    for _, b in ipairs(Badges) do
+        for _, m in ipairs(b.members or {}) do
+            badgeCounts[m] = (badgeCounts[m] or 0) + 1
+        end
+    end
+    local s = { version = DRIVER_VERSION, update = updateAvailable() or "", muted = allBoundMuted(),
                 members = A(), subgroups = A(), profiles = A(), cameras = webCameras(),
                 badges = A(), history = A(), alerts = A(), corners = A() }
     for _, a in ipairs(WEB_ALERTS) do s.alerts[#s.alerts + 1] = a end
@@ -1164,7 +1193,13 @@ local function webState()
         if d then
             local name = ""
             pcall(function() name = C4:GetDeviceDisplayName(d) or "" end)
-            s.members[#s.members + 1] = { n = i, name = (name ~= "") and name or ("Member " .. i), online = OnlineState[i] }
+            s.members[#s.members + 1] = {
+                n = i,
+                name = (name ~= "") and name or ("Member " .. i),
+                online = OnlineState[i],
+                muted = MutedMembers[i] == true,
+                badges = badgeCounts[i] or 0,
+            }
             bound = bound + 1
             if OnlineState[i] == true then online = online + 1 end
         end
@@ -1403,16 +1438,30 @@ local function uiHandle(cmd, f)
         local ok, text = runProfile("SEND_PROFILE", { Profile = tostring(n) }, "Page")
         return { ok = ok, text = text }
     elseif cmd == "TVO_MUTE" then
-        local want = (f.muted ~= nil) and (f.muted == true or f.muted == "true") or (not Muted)
+        local memberIdx = tonumber(f.member)
+        if memberIdx then
+            local d = (memberIdx >= 1 and memberIdx <= memberCount()) and memberDevice(memberIdx) or nil
+            if not d then return { ok = false, text = "TV is not connected" } end
+            local want = (f.muted ~= nil) and (f.muted == true or f.muted == "true") or (not MutedMembers[memberIdx])
+            MutedMembers[memberIdx] = want or nil
+            saveMuted()
+            sendTo({ { memberIdx, d } }, "SET_NOTIFICATION_SETTINGS", { ["Display Notifications"] = want and "Off" or "On" })
+            local name = targetName("Member " .. memberIdx)
+            remember(want and "Muted" or "Unmuted", name, 1)
+            updateExperienceButton()
+            pushIfChanged()
+            return { ok = true, text = name .. (want and " muted" or " unmuted") }
+        end
         local list = targets("All Members")
         if #list == 0 then return { ok = false, text = "No connected TVs" } end
-        Muted = want
-        pcall(function() C4:PersistSetValue("Muted", Muted) end)
-        sendTo(list, "SET_NOTIFICATION_SETTINGS", { ["Display Notifications"] = Muted and "Off" or "On" })
-        remember(Muted and "Notifications muted" or "Notifications unmuted", "All TVs", #list)
+        local want = (f.muted ~= nil) and (f.muted == true or f.muted == "true") or (not allBoundMuted())
+        for _, t in ipairs(list) do MutedMembers[t[1]] = want or nil end
+        saveMuted()
+        sendTo(list, "SET_NOTIFICATION_SETTINGS", { ["Display Notifications"] = want and "Off" or "On" })
+        remember(want and "Notifications muted" or "Notifications unmuted", "All TVs", #list)
         updateExperienceButton()
         pushIfChanged()
-        return { ok = true, text = Muted and "TV notifications muted" or "TV notifications enabled" }
+        return { ok = true, text = want and "All TVs muted" or "All TVs unmuted" }
     elseif cmd == "TVO_CLEAR" then
         local id = f.id
         for _, b in ipairs(Badges) do
@@ -1461,17 +1510,36 @@ function ReceivedFromProxy(idBinding, strCommand, tParams)
 end
 
 --------------------------------------------------------------------------------
--- Multi-state UI Experience Button (binding 5001)
--- States: sent_confirm (4s flash) > muted > all_offline > badge_active > partial_offline > idle_online
+-- Whole-house UI Experience Button (binding 5001)
+-- Because one Controller button appears identically in every room's Navigator,
+-- its states are reserved strictly for whole-house conditions:
+--   sent_confirm (4s flash on whole-house send) > muted (all TVs muted) >
+--   all_offline (no TVs bound) > badge_active (same badge on every bound TV) >
+--   idle_online (default calm state, including TVs in standby).
+-- Per-TV status (online/standby, per-TV badges, per-TV mute) lives in the Advanced view.
 --------------------------------------------------------------------------------
 local LastUiIcon, LastUiDesc = nil, nil
 local ConfirmTimer = nil
 local ConfirmText  = nil
 
+local function wholeHouseBadges(boundSet, boundCount)
+    local out = {}
+    if boundCount == 0 then return out end
+    for _, b in ipairs(Badges) do
+        local covered = 0
+        for _, m in ipairs(b.members or {}) do
+            if boundSet[m] then covered = covered + 1 end
+        end
+        if covered >= boundCount then out[#out + 1] = b end
+    end
+    return out
+end
+
 local function computeExperienceState()
-    local bound, online = 0, 0
+    local boundSet, bound, online = {}, 0, 0
     for i = 1, math.min(memberCount(), MAX_MEMBERS) do
         if memberDevice(i) then
+            boundSet[i] = true
             bound = bound + 1
             if OnlineState[i] == true then online = online + 1 end
         end
@@ -1481,28 +1549,28 @@ local function computeExperienceState()
     if ConfirmText then
         return "sent_confirm", staticLabel and "TV Notifications" or ("Sent: " .. short(ConfirmText, 24))
     end
-    if Muted then
-        return "muted", staticLabel and "TV Notifications" or "TV Alerts Muted"
-    end
     if bound == 0 then
         return "all_offline", staticLabel and "TV Notifications" or "No TVs Connected"
     end
-    if online == 0 then
-        return "all_offline", staticLabel and "TV Notifications" or "All TVs Offline"
+    if allBoundMuted() then
+        return "muted", staticLabel and "TV Notifications" or "All TVs Muted"
     end
-    if #Badges > 0 then
+    local globalBadges = wholeHouseBadges(boundSet, bound)
+    if #globalBadges > 0 then
         local desc
-        if #Badges == 1 then
-            desc = "Badge: " .. short(Badges[1].message or Badges[1].id, 22)
+        if #globalBadges == 1 then
+            desc = "Badge: " .. short(globalBadges[1].message or globalBadges[1].id, 22)
         else
-            desc = #Badges .. " Badges Active"
+            desc = #globalBadges .. " Whole-Home Badges"
         end
         return "badge_active", staticLabel and "TV Notifications" or desc
     end
-    if online < bound then
-        return "partial_offline", staticLabel and "TV Notifications" or (online .. " of " .. bound .. " TVs Online")
+    local desc
+    if online == bound then
+        desc = (bound == 1) and "1 TV Ready" or (bound .. " TVs Ready")
+    else
+        desc = online .. " of " .. bound .. " TVs Active"
     end
-    local desc = (bound == 1) and "1 TV Online" or (bound .. " TVs Online")
     return "idle_online", staticLabel and "TV Notifications" or desc
 end
 

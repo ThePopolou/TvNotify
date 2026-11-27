@@ -52,9 +52,16 @@ select{padding-right:34px;background-image:url("data:image/svg+xml;utf8,<svg xml
 .tv input{-webkit-appearance:checkbox;appearance:auto;height:auto}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .send{margin-top:12px;width:100%;padding:11px;border:0;border-radius:8px;background:var(--accent);color:#fff;font:inherit;font-weight:600;cursor:pointer}
-.tv{display:flex;align-items:center;gap:10px;padding:7px 2px;margin:0;border-bottom:1px solid var(--line);font-size:15px;color:var(--text)}
+.tv{display:flex;align-items:center;gap:8px;padding:8px 2px;margin:0;border-bottom:1px solid var(--line);font-size:15px;color:var(--text)}
 .tv:last-child{border-bottom:0}
-.tv input{width:auto}.tv .st{margin-left:auto;font-size:13px}
+.tv label{display:flex;align-items:center;gap:10px;margin:0;font-size:15px;color:var(--text);cursor:pointer;flex:1;min-width:0}
+.tv input{width:auto}
+.tv .meta{display:flex;align-items:center;gap:6px;margin-left:auto;flex-shrink:0}
+.tv .st{font-size:12px;color:var(--muted);white-space:nowrap}
+.pill{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:2px 7px;border-radius:999px;border:1px solid var(--line);color:var(--muted);background:transparent}
+.pill.badge{border-color:var(--warn);background:var(--warnbg);color:var(--warn)}
+.pill.mute{cursor:pointer;font-family:inherit}
+.pill.mute.on{border-color:var(--warn);background:var(--warnbg);color:var(--warn)}
 .send.alt{background:transparent;color:var(--accent);border:1px solid var(--accent)}
 .savebox{margin-top:12px;padding-top:4px;border-top:1px solid var(--line)}
 .msg{margin-top:8px;font-size:13px;min-height:18px}.msg.ok{color:var(--ok)}.msg.err{color:var(--bad)}
@@ -281,8 +288,8 @@ function setMode(m) {
   });
 }
 
-function dot(o) { return '<span class="dot ' + (o === true ? "on-dot" : o === false ? "off-dot" : "unk-dot") + '"></span>'; }
-function stText(o) { return o === true ? "Online" : o === false ? "Offline" : "Unknown"; }
+function dot(o) { return '<span class="dot ' + (o === true ? "on-dot" : "unk-dot") + '"></span>'; }
+function stText(o) { return o === true ? "Online" : o === false ? "Standby" : "Unknown"; }
 
 function groupChips(el, active, onPick) {
   var st = S.state;
@@ -335,31 +342,39 @@ function render() {
   var st = S.state;
   if (!st) return;
 
-  // Header Mute button
+  // Header Mute button (whole-house)
   var mb = $("mute-btn");
   mb.classList.toggle("on", !!st.muted);
-  mb.textContent = st.muted ? "Muted" : "Mute";
+  mb.textContent = st.muted ? "All Muted" : "Mute All";
 
   // Simple mode: Active badges banner
   $("s-badgecard").classList.toggle("hide", !st.badges.length);
   if (st.badges.length) renderBadgesList($("s-badges"), "s-tmsg");
 
   groupChips($("s-chips"), S.target, function(t) { S.target = t; render(); });
-  $("s-status").innerHTML = '<span class="dot ' + (st.bound > 0 && st.online === st.bound ? "on-dot" : st.online > 0 ? "part-dot" : "off-dot") + '"></span>' +
-    esc(st.online + " of " + st.bound + " TVs online") + (st.muted ? ' <span class="muted">· Alerts muted</span>' : "");
+  $("s-status").innerHTML = '<span class="dot ' + (st.bound > 0 && st.online === st.bound ? "on-dot" : st.online > 0 ? "part-dot" : "unk-dot") + '"></span>' +
+    esc(st.online + " of " + st.bound + " TVs active") + (st.muted ? ' <span class="muted">· All TVs muted</span>' : "");
   $("s-notiles").textContent = tiles($("s-tiles"), "s-tmsg") ? "" : "No profiles set up yet.";
 
-  // Advanced mode: TV checkboxes
+  // Advanced mode: TV list with per-TV online/standby, badge count, and mute toggle
   var picked = {};
   Array.prototype.forEach.call(document.querySelectorAll("#a-tvs input:checked"), function(i) { picked[i.value] = 1; });
   var first = !$("a-tvs").dataset.done;
   $("a-tvs").innerHTML = st.members.map(function(m) {
-    return '<label class="tv"><input type="checkbox" value="' + m.n + '"' +
+    var badgePill = m.badges > 0 ? '<span class="pill badge" title="Active badges on this TV">' + m.badges + (m.badges === 1 ? ' badge' : ' badges') + '</span>' : '';
+    var muteBtn = '<button type="button" class="pill mute' + (m.muted ? ' on' : '') + '" data-mute="' + m.n + '" data-cur="' + (m.muted ? '1' : '0') + '">' + (m.muted ? 'Muted' : 'Mute') + '</button>';
+    return '<div class="tv"><label><input type="checkbox" value="' + m.n + '"' +
       ((first || picked[m.n]) && m.online !== false ? " checked" : "") +
-      (m.online === false ? " disabled" : "") + '> ' + esc(m.name) +
-      '<span class="st">' + dot(m.online) + stText(m.online) + '</span></label>';
+      (m.online === false ? " disabled" : "") + '> ' + esc(m.name) + '</label>' +
+      '<span class="meta">' + badgePill + muteBtn + '<span class="st">' + dot(m.online) + stText(m.online) + '</span></span></div>';
   }).join("") || '<div class="muted">No TVs connected to the Controller.</div>';
   $("a-tvs").dataset.done = 1;
+  Array.prototype.forEach.call(document.querySelectorAll("#a-tvs button[data-mute]"), function(b) {
+    b.onclick = function() {
+      b.disabled = true;
+      call("TVO_MUTE", { member: Number(b.dataset.mute), muted: b.dataset.cur !== "1" }, "a-msg");
+    };
+  });
 
   groupChips($("a-groups"), "", function(t) {
     var want = {};
