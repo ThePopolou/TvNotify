@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TV Notifications</title>
+<style>
+:root{
+  --bg:#f4f5f7;--card:#fff;--text:#1d1d1f;--muted:#6b6b70;--line:#dcdce0;
+  --accent:#0a74c9;--accentbg:#e6f1fb;--ok:#2e7d32;--okbg:#e8f5e9;
+  --bad:#c62828;--warn:#a15c00;--warnbg:#fff8e1;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#161618;--card:#222225;--text:#f2f2f4;--muted:#a0a0a8;--line:#3a3a3f;
+    --accent:#5aa9ec;--accentbg:#1d3550;--ok:#7bc67e;--okbg:#1a3320;
+    --bad:#ef7a7a;--warn:#f0b44a;--warnbg:#332814;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 -apple-system,Segoe UI,Roboto,Arial,sans-serif}
+.wrap{max-width:980px;margin:0 auto;padding:16px}
+header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+h1{font-size:20px;font-weight:600;margin:0}
+.hctrl{display:flex;align-items:center;gap:8px}
+.mute-btn{border:1px solid var(--line);background:transparent;color:var(--text);border-radius:8px;padding:7px 12px;font:inherit;font-size:14px;cursor:pointer}
+.mute-btn.on{background:var(--warnbg);border-color:var(--warn);color:var(--warn);font-weight:600}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{border:0;background:transparent;color:var(--text);padding:7px 14px;font:inherit;cursor:pointer}
+.seg button.on{background:var(--accentbg);color:var(--accent);font-weight:600}
+.grid{display:grid;gap:14px;grid-template-columns:1fr}
+@media (min-width:760px){.grid.two{grid-template-columns:1fr 1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.card.banner{border-color:var(--warn);background:var(--warnbg)}
+.card h2{font-size:13px;font-weight:600;color:var(--muted);margin:0 0 8px;text-transform:none}
+.card.banner h2{color:var(--warn)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line);background:transparent;color:var(--text);border-radius:999px;padding:6px 12px;font:inherit;font-size:14px;cursor:pointer}
+.chip.on{background:var(--accentbg);border-color:var(--accent);color:var(--accent);font-weight:600}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:1px}
+.upd{color:var(--ok);font-weight:600;white-space:nowrap}
+.on-dot{background:var(--ok)}.part-dot{background:var(--warn)}.off-dot{background:var(--bad)}.unk-dot{background:var(--muted)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.tile{border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer;background:transparent;color:var(--text);text-align:left;font:inherit;transition:border-color .15s,background-color .15s,opacity .15s}
+.tile:hover{border-color:var(--accent)}
+.tile.busy{opacity:.65;pointer-events:none;border-color:var(--accent)}
+.tile.sent{background:var(--okbg);border-color:var(--ok)}
+.tile b{display:block}.tile small{color:var(--muted)}
+label{display:block;font-size:12px;color:var(--muted);margin:10px 0 4px}
+input,select{width:100%;height:44px;box-sizing:border-box;padding:0 10px;border:1px solid var(--line);border-radius:8px;background-color:var(--card);color:var(--text);font:inherit;font-size:16px;line-height:normal;-webkit-appearance:none;appearance:none}
+select{padding-right:34px;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' fill='none' stroke='%23999' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>");background-repeat:no-repeat;background-position:right 12px center;background-size:12px 8px}
+.tv input{-webkit-appearance:checkbox;appearance:auto;height:auto}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.send{margin-top:12px;width:100%;padding:11px;border:0;border-radius:8px;background:var(--accent);color:#fff;font:inherit;font-weight:600;cursor:pointer}
+.tv{display:flex;align-items:center;gap:8px;padding:8px 2px;margin:0;border-bottom:1px solid var(--line);font-size:15px;color:var(--text)}
+.tv:last-child{border-bottom:0}
+.tv label{display:flex;align-items:center;gap:10px;margin:0;font-size:15px;color:var(--text);cursor:pointer;flex:1;min-width:0}
+.tv input{width:auto}
+.tv .meta{display:flex;align-items:center;gap:6px;margin-left:auto;flex-shrink:0}
+.tv .st{font-size:12px;color:var(--muted);white-space:nowrap}
+.pill{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:2px 7px;border-radius:999px;border:1px solid var(--line);color:var(--muted);background:transparent}
+.pill.badge{border-color:var(--warn);background:var(--warnbg);color:var(--warn)}
+.pill.mute{cursor:pointer;font-family:inherit}
+.pill.mute.on{border-color:var(--warn);background:var(--warnbg);color:var(--warn)}
+.send.alt{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+.savebox{margin-top:12px;padding-top:4px;border-top:1px solid var(--line)}
+.msg{margin-top:8px;font-size:13px;min-height:18px}.msg.ok{color:var(--ok)}.msg.err{color:var(--bad)}
+.list div{display:flex;gap:8px;align-items:center;font-size:14px;padding:5px 0;border-bottom:1px solid var(--line)}
+.list div:last-child{border-bottom:0}
+.list button{margin-left:auto;border:1px solid var(--line);background:transparent;color:var(--text);border-radius:6px;padding:4px 10px;cursor:pointer;font-size:13px}
+.muted{color:var(--muted);font-size:13px}.hide{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>TV Notifications</h1>
+    <div class="hctrl">
+      <button class="mute-btn" id="mute-btn" title="Mute or unmute TV pop-up notifications">Mute</button>
+      <div class="seg" id="mode">
+        <button data-m="simple">Simple</button>
+        <button data-m="advanced">Advanced</button>
+      </div>
+    </div>
+  </header>
+
+  <section id="simple" class="grid">
+    <div class="card banner hide" id="s-badgecard">
+      <h2>Active TV badges</h2>
+      <div class="list" id="s-badges"></div>
+    </div>
+    <div class="card">
+      <h2>Send to</h2>
+      <div class="chips" id="s-chips"></div>
+      <div class="muted" id="s-status" style="margin-top:8px"></div>
+    </div>
+    <div class="card">
+      <h2>Quick messages</h2>
+      <div class="tiles" id="s-tiles"></div>
+      <div class="muted" id="s-notiles"></div>
+      <div class="msg" id="s-tmsg"></div>
+    </div>
+    <div class="card">
+      <h2>Or type a message</h2>
+      <input id="s-text" maxlength="200" placeholder="Come downstairs please">
+      <button class="send" id="s-send">Send</button>
+      <div class="msg" id="s-msg"></div>
+    </div>
+  </section>
+
+  <section id="advanced" class="grid two hide">
+    <div class="card">
+      <h2>Send to</h2>
+      <div id="a-tvs"></div>
+      <div class="chips" id="a-groups" style="margin-top:10px"></div>
+    </div>
+    <div class="card">
+      <h2>Message</h2>
+      <label>Type</label>
+      <select id="a-type">
+        <option value="notification">Notification</option>
+        <option value="alert">Alert</option>
+        <option value="camera">Camera</option>
+        <option value="badge">Badge (stays on screen)</option>
+      </select>
+      <div id="a-alertbox"><label>Alert type</label><select id="a-alert"></select></div>
+      <div id="a-titlebox"><label>Title</label><input id="a-title" maxlength="120"></div>
+      <label>Message</label><input id="a-message" maxlength="200">
+      <div id="a-cambox">
+        <div class="row">
+          <div><label>Camera</label><select id="a-camera"></select></div>
+          <div><label>Show</label><select id="a-output"><option>Snapshot</option><option>Stream</option><option>Snapshot + Stream</option></select></div>
+        </div>
+      </div>
+      <div id="a-popbox" class="row">
+        <div><label>Corner</label><select id="a-corner"></select></div>
+        <div><label>Duration (sec, 0 = default)</label><input id="a-duration" type="number" min="0" max="3600" value="0"></div>
+      </div>
+      <div id="a-badgebox"><label>Remove after (seconds, 0 = stays until cleared)</label><input id="a-expire" type="number" min="0" max="86400" value="0"></div>
+      <button class="send" id="a-send">Send</button>
+      <button class="send alt" id="a-save">Save as profile</button>
+      <div id="a-savebox" class="savebox hide">
+        <label>Profile name</label><input id="a-pname" maxlength="60">
+        <label>Save to</label><select id="a-slot"></select>
+        <div class="row">
+          <button class="send" id="a-saveok">Save</button>
+          <button class="send alt" id="a-savecancel">Cancel</button>
+        </div>
+      </div>
+      <div class="msg" id="a-msg"></div>
+    </div>
+    <div class="card">
+      <h2>Quick messages</h2>
+      <div class="tiles" id="a-tiles"></div>
+    </div>
+    <div class="card">
+      <h2>On screen now</h2>
+      <div class="list" id="a-badges"></div>
+      <h2 style="margin-top:14px">Recent</h2>
+      <div class="list" id="a-history"></div>
+    </div>
+  </section>
+
+  <p class="muted" id="foot"></p>
+</div>
+
+<script>
+var S = { state: null, target: "all", mode: "simple" };
+var ARM = null;
+var REQ_SEQ = 0;
+var INFLIGHT = {};   // reqId -> { msgId, onDone }
+var LAST_MSG_ID = null;
+
+function $(i) { return document.getElementById(i); }
+function esc(s) {
+  return String(s == null ? "" : s).replace(/[&<>"]/g, function(c) {
+    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+  });
+}
+
+/* Control4 web view channel: C4.sendCommand -> Controller's UIRequest(); replies & pushes arrive in onDataToUi */
+function hasApi() { return window.C4 && typeof window.C4.sendCommand === "function"; }
+
+function call(cmd, data, msgId, onDone) {
+  var payload = {};
+  if (data) { for (var k in data) { if (Object.prototype.hasOwnProperty.call(data, k)) payload[k] = data[k]; } }
+  var reqId = ++REQ_SEQ;
+  payload.reqId = reqId;
+  if (msgId || onDone) {
+    INFLIGHT[reqId] = { msgId: msgId || null, onDone: onDone || null };
+    if (msgId) LAST_MSG_ID = msgId;
+  }
+  try {
+    window.C4.sendCommand(cmd, JSON.stringify(payload), false, true);
+  } catch (e) {
+    delete INFLIGHT[reqId];
+    if (msgId) note(msgId, false, "Could not send: " + e);
+    if (onDone) onDone(false);
+  }
+}
+
+function xmlUnescape(s) {
+  return s
+    .replace(/&#x([0-9a-fA-F]+);/g, function(m, h) { return String.fromCharCode(parseInt(h, 16)); })
+    .replace(/&#(\d+);/g, function(m, d) { return String.fromCharCode(parseInt(d, 10)); })
+    .replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&amp;/g, "&");
+}
+
+function findPayload(x, depth) {
+  if (depth > 8 || x == null) return null;
+  if (typeof x === "string") {
+    var s = x.replace(/^\s+|\s+$/g, "");
+    if (!s) return null;
+    if (s.charAt(0) === "{" || s.charAt(0) === "[") {
+      try { return findPayload(JSON.parse(s), depth + 1); } catch (e) {}
+    }
+    var m = s.match(/<tvnotify[^>]*>([\s\S]*)<\/tvnotify>/);
+    if (m) return findPayload(xmlUnescape(m[1]), depth + 1);
+    if (s.indexOf("&quot;tvo&quot;") >= 0) return findPayload(xmlUnescape(s), depth + 1);
+    return null;
+  }
+  if (typeof x === "object") {
+    if (x.tvo === 1 && x.state) return x;
+    for (var k in x) {
+      if (Object.prototype.hasOwnProperty.call(x, k)) {
+        var r = findPayload(x[k], depth + 1);
+        if (r) return r;
+      }
+    }
+  }
+  return null;
+}
+
+function accept(v) {
+  var d = findPayload(v, 0);
+  if (!d) return false;
+  if (d.result) {
+    var entry = (d.result.reqId != null) ? INFLIGHT[d.result.reqId] : null;
+    if (entry) {
+      delete INFLIGHT[d.result.reqId];
+      if (entry.msgId) note(entry.msgId, d.result.ok, d.result.text);
+      if (entry.onDone) entry.onDone(!!d.result.ok);
+    } else if (LAST_MSG_ID && d.result.text) {
+      note(LAST_MSG_ID, d.result.ok, d.result.text);
+      LAST_MSG_ID = null;
+    }
+    if (d.result.saved) {
+      $("a-savebox").classList.add("hide");
+      ARM = null;
+    }
+  }
+  S.state = d.state;
+  render();
+  return true;
+}
+
+window.onDataToUi = function(v) { accept(v); };
+window.onSendCommandError = function(m) {
+  for (var k in INFLIGHT) {
+    if (Object.prototype.hasOwnProperty.call(INFLIGHT, k)) {
+      var e = INFLIGHT[k];
+      if (e.msgId) note(e.msgId, false, "Controller did not answer (" + m + ")");
+      if (e.onDone) e.onDone(false);
+    }
+  }
+  INFLIGHT = {};
+};
+window.onSubscribeToDataToUiError = function() {};
+window.onSubscribeToDataToUi = window.onSubscribeToDataToUiError;
+window.onVariable = function() {};
+window.onSubscribeToVariableError = function() {};
+
+function note(id, ok, text) {
+  var m = $(id);
+  if (!m) return;
+  m.className = "msg " + (ok ? "ok" : "err");
+  m.textContent = text;
+  setTimeout(function() { if (m.textContent === text) m.textContent = ""; }, 6000);
+}
+
+function setMode(m) {
+  S.mode = m;
+  try { localStorage.setItem("tvo-mode", m); } catch (e) {}
+  $("simple").classList.toggle("hide", m !== "simple");
+  $("advanced").classList.toggle("hide", m !== "advanced");
+  Array.prototype.forEach.call(document.querySelectorAll("#mode button"), function(b) {
+    b.classList.toggle("on", b.dataset.m === m);
+  });
+}
+
+function dot(o) { return '<span class="dot ' + (o === true ? "on-dot" : "unk-dot") + '"></span>'; }
+function stText(o) { return o === true ? "Online" : o === false ? "Standby" : "Unknown"; }
+
+function groupChips(el, active, onPick) {
+  var st = S.state;
+  var h = '<button class="chip' + (active === "all" ? " on" : "") + '" data-t="all">All TVs</button>';
+  st.subgroups.forEach(function(g) {
+    h += '<button class="chip' + (active === "sg:" + g.k ? " on" : "") + '" data-t="sg:' + g.k + '">' + esc(g.name) + '</button>';
+  });
+  el.innerHTML = h;
+  Array.prototype.forEach.call(el.querySelectorAll(".chip"), function(c) {
+    c.onclick = function() { onPick(c.dataset.t); };
+  });
+}
+
+function renderBadgesList(el, msgId) {
+  var st = S.state;
+  el.innerHTML = st.badges.map(function(b) {
+    return '<div>' + esc(b.message) + ' <span class="muted">· ' + esc(b.label) + '</span><button data-id="' + esc(b.id) + '">Clear</button></div>';
+  }).join("") || '<div class="muted">Nothing on screen.</div>';
+  Array.prototype.forEach.call(el.querySelectorAll("button"), function(b) {
+    b.onclick = function() {
+      b.disabled = true;
+      call("TVO_CLEAR", { id: b.dataset.id }, msgId);
+    };
+  });
+}
+
+function tiles(el, msgId) {
+  var st = S.state;
+  if (!st.profiles.length) { el.innerHTML = ""; return false; }
+  el.innerHTML = st.profiles.map(function(p) {
+    return '<button class="tile" data-n="' + p.n + '"><b>' + esc(p.name) + '</b><small>' + esc(p.type) + ' · ' + esc(p.targets) + '</small></button>';
+  }).join("");
+  Array.prototype.forEach.call(el.querySelectorAll(".tile"), function(t) {
+    t.onclick = function() {
+      if (t.classList.contains("busy")) return;
+      t.classList.add("busy");
+      call("TVO_PROFILE", { n: t.dataset.n }, msgId, function(ok) {
+        t.classList.remove("busy");
+        if (ok) {
+          t.classList.add("sent");
+          setTimeout(function() { t.classList.remove("sent"); }, 1400);
+        }
+      });
+    };
+  });
+  return true;
+}
+
+function render() {
+  var st = S.state;
+  if (!st) return;
+
+  // Header Mute button (whole-house)
+  var mb = $("mute-btn");
+  mb.classList.toggle("on", !!st.muted);
+  mb.textContent = st.muted ? "All Muted" : "Mute All";
+
+  // Simple mode: Active badges banner
+  $("s-badgecard").classList.toggle("hide", !st.badges.length);
+  if (st.badges.length) renderBadgesList($("s-badges"), "s-tmsg");
+
+  groupChips($("s-chips"), S.target, function(t) { S.target = t; render(); });
+  $("s-status").innerHTML = '<span class="dot ' + (st.bound > 0 && st.online === st.bound ? "on-dot" : st.online > 0 ? "part-dot" : "unk-dot") + '"></span>' +
+    esc(st.online + " of " + st.bound + " TVs active") + (st.muted ? ' <span class="muted">· All TVs muted</span>' : "");
+  $("s-notiles").textContent = tiles($("s-tiles"), "s-tmsg") ? "" : "No profiles set up yet.";
+
+  // Advanced mode: TV list with per-TV online/standby, badge count, and mute toggle
+  var picked = {};
+  Array.prototype.forEach.call(document.querySelectorAll("#a-tvs input:checked"), function(i) { picked[i.value] = 1; });
+  var first = !$("a-tvs").dataset.done;
+  $("a-tvs").innerHTML = st.members.map(function(m) {
+    var badgePill = m.badges > 0 ? '<span class="pill badge" title="Active badges on this TV">' + m.badges + (m.badges === 1 ? ' badge' : ' badges') + '</span>' : '';
+    var muteBtn = '<button type="button" class="pill mute' + (m.muted ? ' on' : '') + '" data-mute="' + m.n + '" data-cur="' + (m.muted ? '1' : '0') + '">' + (m.muted ? 'Muted' : 'Mute') + '</button>';
+    return '<div class="tv"><label><input type="checkbox" value="' + m.n + '"' +
+      ((first || picked[m.n]) && m.online !== false ? " checked" : "") +
+      (m.online === false ? " disabled" : "") + '> ' + esc(m.name) + '</label>' +
+      '<span class="meta">' + badgePill + muteBtn + '<span class="st">' + dot(m.online) + stText(m.online) + '</span></span></div>';
+  }).join("") || '<div class="muted">No TVs connected to the Controller.</div>';
+  $("a-tvs").dataset.done = 1;
+  Array.prototype.forEach.call(document.querySelectorAll("#a-tvs button[data-mute]"), function(b) {
+    b.onclick = function() {
+      b.disabled = true;
+      call("TVO_MUTE", { member: Number(b.dataset.mute), muted: b.dataset.cur !== "1" }, "a-msg");
+    };
+  });
+
+  groupChips($("a-groups"), "", function(t) {
+    var want = {};
+    if (t === "all") st.members.forEach(function(m) { want[m.n] = 1; });
+    else st.subgroups.forEach(function(g) { if ("sg:" + g.k === t) g.members.forEach(function(n) { want[n] = 1; }); });
+    Array.prototype.forEach.call(document.querySelectorAll("#a-tvs input"), function(i) {
+      if (!i.disabled) i.checked = !!want[i.value];
+    });
+  });
+
+  tiles($("a-tiles"), "a-msg");
+  renderBadgesList($("a-badges"), "a-msg");
+
+  $("a-history").innerHTML = st.history.map(function(h) {
+    return '<div><span class="muted">' + esc(h.t) + '</span> ' + esc(h.what) + ' <span class="muted">→ ' + esc(h.to) + ' (' + h.n + ')</span></div>';
+  }).join("") || '<div class="muted">Nothing sent yet.</div>';
+
+  if (!$("a-alert").options.length) {
+    $("a-alert").innerHTML = st.alerts.map(function(a) { return "<option>" + esc(a) + "</option>"; }).join("");
+    $("a-corner").innerHTML = st.corners.map(function(a) { return "<option>" + esc(a) + "</option>"; }).join("");
+  }
+  var cur = $("a-camera").value;
+  $("a-camera").innerHTML = st.cameras.map(function(c) { return '<option value="' + c.id + '">' + esc(c.name) + '</option>'; }).join("") || '<option value="">No cameras</option>';
+  if (cur) $("a-camera").value = cur;
+
+  var slot = $("a-slot").value, h = "";
+  if (st.nextSlot) h += '<option value="next">Next empty slot (' + st.nextSlot + ')</option>';
+  st.profiles.forEach(function(p) {
+    h += '<option value="' + p.n + '">Replace ' + p.n + ' – ' + esc(p.name) + ' (' + esc(p.type) + ')</option>';
+  });
+  $("a-slot").innerHTML = h || '<option value="">No profile slots</option>';
+  if (slot && $("a-slot").querySelector('option[value="' + slot + '"]')) $("a-slot").value = slot;
+
+  var f = $("foot");
+  f.textContent = "TvNotify Controller v" + st.version;
+  if (st.update) {
+    var u = document.createElement("span");
+    u.className = "upd";
+    u.textContent = "Driver update available (" + st.update + ")";
+    f.appendChild(document.createTextNode(" | "));
+    f.appendChild(u);
+  }
+}
+
+function typeChanged() {
+  var t = $("a-type").value;
+  $("a-alertbox").classList.toggle("hide", t !== "alert");
+  $("a-cambox").classList.toggle("hide", t !== "camera");
+  $("a-titlebox").classList.toggle("hide", t === "badge");
+  $("a-popbox").classList.toggle("hide", t === "badge");
+  $("a-badgebox").classList.toggle("hide", t !== "badge");
+}
+
+function load() { if (hasApi()) call("TVO_STATE", {}); }
+
+$("mute-btn").onclick = function() {
+  var nextMuted = !(S.state && S.state.muted);
+  call("TVO_MUTE", { muted: nextMuted }, S.mode === "simple" ? "s-tmsg" : "a-msg");
+};
+
+$("s-send").onclick = function() {
+  var t = $("s-text").value.trim();
+  if (!t) { note("s-msg", false, "Type a message first"); return; }
+  call("TVO_SEND", { targets: S.target, type: "notification", title: t }, "s-msg");
+  $("s-text").value = "";
+};
+
+function formData() {
+  var ids = [];
+  Array.prototype.forEach.call(document.querySelectorAll("#a-tvs input:checked"), function(i) { ids.push(i.value); });
+  if (!ids.length) { note("a-msg", false, "Choose at least one TV"); return null; }
+  var t = $("a-type").value;
+  var d = {
+    targets: "m:" + ids.join(","), type: t,
+    title: $("a-title").value.trim(), message: $("a-message").value.trim(),
+    alertType: $("a-alert").value, corner: $("a-corner").value,
+    duration: $("a-duration").value, camera: $("a-camera").value,
+    output: $("a-output").value, expire: $("a-expire").value
+  };
+  if (t !== "camera" && !d.title && !d.message) { note("a-msg", false, "Enter a title or message"); return null; }
+  if (t === "badge" && !d.message) { note("a-msg", false, "Enter the badge text in Message"); return null; }
+  if (t === "camera" && !d.camera) { note("a-msg", false, "Choose a camera"); return null; }
+  return d;
+}
+
+$("a-send").onclick = function() { var d = formData(); if (d) call("TVO_SEND", d, "a-msg"); };
+$("a-save").onclick = function() {
+  var b = $("a-savebox");
+  b.classList.toggle("hide");
+  ARM = null;
+  if (!b.classList.contains("hide") && !$("a-pname").value.trim()) {
+    $("a-pname").value = ($("a-title").value.trim() || $("a-message").value.trim()).slice(0, 60);
+  }
+};
+$("a-savecancel").onclick = function() { $("a-savebox").classList.add("hide"); ARM = null; };
+$("a-saveok").onclick = function() {
+  var d = formData();
+  if (!d) return;
+  d.name = $("a-pname").value.trim();
+  if (!d.name) { note("a-msg", false, "Enter a profile name"); return; }
+  d.slot = $("a-slot").value;
+  if (!d.slot) { note("a-msg", false, "No profile slot available"); return; }
+  if (d.slot !== "next") {
+    if (ARM !== d.slot) {
+      ARM = d.slot;
+      var o = $("a-slot").options[$("a-slot").selectedIndex];
+      note("a-msg", false, o.text.replace(/^Replace /, "Replaces profile ") + " – tap Save again to confirm");
+      setTimeout(function() { if (ARM === d.slot) ARM = null; }, 10000);
+      return;
+    }
+    d.confirm = true;
+  }
+  call("TVO_SAVE_PROFILE", d, "a-msg");
+};
+
+Array.prototype.forEach.call(document.querySelectorAll("#mode button"), function(b) {
+  b.onclick = function() { setMode(b.dataset.m); };
+});
+$("a-type").onchange = typeChanged;
+typeChanged();
+
+var m = "simple";
+try { m = localStorage.getItem("tvo-mode") || "simple"; } catch (e) {}
+setMode(m);
+
+(function wait(n) {
+  if (hasApi()) {
+    try { window.C4.subscribeToDataToUi(true); } catch (e) {}
+    load();
+    document.addEventListener("visibilitychange", function() { if (!document.hidden) load(); });
+    window.addEventListener("pageshow", load);
+    window.addEventListener("focus", load);
+    return;
+  }
+  if (n < 30) { setTimeout(function() { wait(n + 1); }, 150); return; }
+  $("foot").textContent = "Open this page from the TvNotify Controller button in a Control4 Navigator (the Control4 app or a touch screen).";
+})(0);
+</script>
+</body>
+</html>

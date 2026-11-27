@@ -1,0 +1,204 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>TvNotify Controller</title><meta http-equiv="X-UA-Compatible" content="IE=edge"><style>
+body{font-family:Segoe UI,Arial,Helvetica,sans-serif;max-width:900px;margin:24px auto;padding:0 16px;color:#263238;line-height:1.55;background:#ffffff}
+h1{color:#0d47a1;font-size:30px;margin:0 0 4px;padding:0 0 10px;border-bottom:4px solid #03a9f4}
+.sub{color:#546e7a;font-size:15px;margin:0 0 18px}
+h2{background:#0277bd;color:#ffffff;font-size:20px;padding:8px 14px;margin:14px 0 14px;border-radius:4px}
+h3{background:#e3f2fd;color:#0d47a1;font-size:16px;padding:5px 12px;margin:22px 0 8px;border-left:5px solid #0288d1}
+hr{border:0;border-top:1px solid #cfd8dc;margin:30px 0 0}
+table{border-collapse:collapse;margin:8px 0 16px;width:100%}
+td,th{border:1px solid #cfd8dc;padding:6px 10px;text-align:left;font-size:14px;vertical-align:top}
+th{background:#e3f2fd;color:#0d47a1}
+tr:nth-child(even) td{background:#f7fafc}
+code{background:#eceff1;padding:1px 5px;border-radius:3px;font-size:13px}
+td code{word-break:break-all}
+.note{background:#fff8e1;border-left:5px solid #ffb300;padding:10px 14px;margin:12px 0 18px}
+.note b.t{color:#8a5a00}
+ul li{margin:3px 0}
+</style></head><body>
+<h1>TvNotify Controller</h1>
+<p class="sub">Control4 driver that sends to several TvNotify room drivers at once</p>
+<p>The Controller works with the <b>TvNotify</b> room drivers (one per TV endpoint) and treats them as one system. It can:</p>
+<ul>
+<li>Send any room driver command to <b>all TV endpoints</b>, to <b>one</b>, or to a named <b>subgroup</b> (for example "Upstairs") - up to 12 members and 6 subgroups.</li>
+<li>Show each member's <b>Online / Offline</b> state, with variables and events for programming.</li>
+<li>Hold up to 20 <b>profiles</b> - notifications or settings prepared once and sent with a single, quick-to-open <b>Send Profile</b> command.</li>
+<li>Act as an <b>Experience Button</b> that opens the <b>TV Notifications</b> page in the Control4 app and on touch screens: send messages, use profiles as quick messages, save new profiles and clear badges.</li>
+</ul>
+
+<hr><h2>Setup</h2>
+<h3>Before you start</h3>
+<ul>
+<li>Add and set up one <b>TvNotify</b> room driver per TV endpoint (see the room driver's documentation), and check each one with its <b>Send Test Notification</b> action.</li>
+<li><b>Requirement:</b> Control4 OS <b>3.3.0 or later</b>.</li>
+</ul>
+<h3>Step 1 - Add the Controller</h3>
+<p>In Composer, add <b>TvNotify Controller</b> to the project (any room).</p>
+<h3>Step 2 - Connect the room drivers</h3>
+<p>In the <b>Connections</b> tab, connect each <i>TV Member N</i> binding (Control Outputs / Other) to the <i>TvNotify Controller</i> binding of a room driver.
+Then set <b>Number of TV Members</b> to the number you connected: the properties page shows one <b>Member N</b> line per member, with its name and status.
+The Connections tab always lists all 12 <i>TV Member</i> bindings - only connect as many as you set.</p>
+<h3>Step 3 - Subgroups (optional)</h3>
+<p>Set <b>Number of Subgroups</b>, then give each subgroup a name and its member numbers (see <i>Subgroups</i> below).</p>
+<h3>Step 4 - Profiles (optional)</h3>
+<p>Set <b>Number of Profiles</b> and fill in the <b>Profile Editor</b> for each profile (see <i>Profiles</i> below).</p>
+<h3>Step 5 - The TV Notifications button</h3>
+<p>Show the button in a room: <b>System Design &rarr; (room) &rarr; Room Properties &rarr; Navigator</b> tab &rarr; <i>Device Visibility and Display Order</i>,
+and tick <b>TvNotify Controller</b> in the menu you want (for example Comfort, or any Experience menu). Repeat for each room, then refresh the Navigators.</p>
+<h3>Step 6 - Next steps</h3>
+<ul>
+<li>Program with <b>Send Profile</b>, or with the full commands and their <b>Targets</b> (see <i>Programming commands</i>).</li>
+<li>Camera popups use each member room driver's own <b>Camera Snapshots</b> properties, so set those on every room driver.</li>
+</ul>
+
+<hr><h2>Properties</h2>
+<h3>Driver Information</h3>
+<p>Shows the installed version, how many members are online, and the address of the TV Notifications page.</p>
+<table><tr><th>Property</th><th>Description</th></tr>
+<tr><td>Driver Version</td><td>The installed version (read-only).</td></tr>
+<tr><td>Status</td><td>Events captured by the driver will be recorded here, including how many members are online (e.g. "3 of 4 online").</td></tr>
+<tr><td>Web View Address</td><td>The TV Notifications page address (read-only). It is sent to the button automatically a few seconds after the driver starts.</td></tr></table>
+<h3>TV Members</h3>
+<p>Lists the room drivers connected to the Controller and whether each TV endpoint is online.</p>
+<table><tr><th>Property</th><th>Description</th></tr>
+<tr><td>Number of TV Members</td><td>How many <i>TV Member</i> connections are used (1 - 12, default 4). Members above this number are hidden and ignored by All TVs, subgroups and targets, even if something is connected to them.</td></tr>
+<tr><td>Member 1 - 12</td><td>The connected room driver's name and id, <i>Online</i>, <i>Offline</i> or <i>Status unknown</i>, and the subgroups it belongs to, for example
+<code>Living Room (id 37) - Online [Downstairs]</code> (read-only). Status comes from the room driver's ONLINE variable and updates as soon as it changes (no timed polling); names are refreshed when bindings change and each time the TV Notifications page is opened.</td></tr></table>
+<h3>Subgroups</h3>
+<p>Named groups of members, so a command or profile can go to, for example, only the upstairs TV endpoints.</p>
+<table><tr><th>Property</th><th>Description</th></tr>
+<tr><td>Number of Subgroups</td><td>How many subgroups are used (0 - 6, default 2). A Name and Members pair is shown for each.</td></tr>
+<tr><td>Subgroup N Name</td><td>The subgroup's name, for example Upstairs. Shown in the member list, the Profile Targets list and the TV Notifications page.</td></tr>
+<tr><td>Subgroup N Members</td><td>The member numbers in the subgroup, separated by commas, for example <code>1, 3, 4</code>. A member can be in several subgroups; numbers above <b>Number of TV Members</b> are ignored.</td></tr></table>
+<h3>Profiles</h3>
+<p>An overview of the profiles: one read-only summary line per profile.</p>
+<table><tr><th>Property</th><th>Description</th></tr>
+<tr><td>Number of Profiles</td><td>How many profiles are shown and can be sent (1 - 20, default 5). Lowering it deletes nothing: higher profiles are only hidden and cannot be sent until the number is raised again.</td></tr>
+<tr><td>Profile N Summary</td><td>Name, type, content and target of the profile, for example <i>Doorbell | Alert | "Front door" | Upstairs</i> (read-only). Targets are shown by name and follow renames.</td></tr></table>
+<h3>Profile Editor</h3>
+<p>Sets up one profile at a time: choose the profile number, then fill in the fields. Every change is saved to that profile straight away, and only the fields used by the chosen type are shown.</p>
+<table><tr><th>Property</th><th>Description</th></tr>
+<tr><td>Profile Status</td><td>The result of the last profile button press: armed, deleted, copied, or why nothing happened (read-only).</td></tr>
+<tr><td>Profile to Edit</td><td>The profile number the fields below belong to.</td></tr>
+<tr><td>Profile Name</td><td>A name for your reference; also the tile name on the TV Notifications page.</td></tr>
+<tr><td>Profile Type</td><td>What the profile sends: Notification, Alert, Camera, Fixed (badge), Set Overlay or Set Notification Settings (see the table below).</td></tr>
+<tr><td>Profile Targets</td><td>All TVs, one connected TV or a subgroup, listed by name (for example <i>Member 2 - Lounge TV</i>, <i>Subgroup 1 - Upstairs</i>).
+A profile keeps its target by member / subgroup number, so renaming never changes where it is sent; a target whose TV endpoint has been disconnected shows as <i>Member N (no TV connected)</i>.</td></tr>
+<tr><td>Camera</td><td>A list of the project's cameras (Camera profiles). After adding a camera to the project press <b>Refresh Camera List</b> (Actions tab).</td></tr>
+<tr><td>Colour fields</td><td>Small Icon Color, and Message / Icon / Border / Background Color for Fixed profiles: <i>Use Default</i> (<i>No Tint</i> for the icon, <i>Use TV Default</i> for the small icon) or <i>Custom</i>.
+<i>Custom</i> shows a colour picker below it, and for the background also <b>Background Opacity</b> (100% solid to 0% clear). Left on the default, nothing is sent and TvOverlay's own colours apply.</td></tr>
+<tr><td>Other fields</td><td>The same fields as the room driver's commands - see <i>Programming commands</i>. If Notification ID / Fixed Notification ID is empty, the profile uses <code>profile-N</code>,
+so sending it again replaces its previous popup or badge.</td></tr></table>
+<table><tr><th>Profile Type</th><th>Sends</th><th>Fields</th></tr>
+<tr><td>Notification</td><td>Send Notification</td><td>Title, Message, Source, Image, Video URL, Large Icon, Small Icon, Small Icon Color, Corner, Duration, Notification ID</td></tr>
+<tr><td>Alert</td><td>Send Alert</td><td>Alert Type, Title, Message, Corner, Duration, Notification ID</td></tr>
+<tr><td>Camera</td><td>Send Camera Notification</td><td>Title, Message, Camera, Output, Camera Vendor, Snapshot URL, Stream URL, Corner, Duration, Notification ID</td></tr>
+<tr><td>Fixed</td><td>Send Fixed Notification</td><td>Fixed Notification ID, Message, Icon, Message / Icon / Border / Background Color, Shape, Expiration</td></tr>
+<tr><td>Set Overlay</td><td>Set Overlay. These change the TvOverlay settings of every targeted TV endpoint and stay in effect until changed again.</td><td>Background Visibility, Clock Visibility, Hot Corner</td></tr>
+<tr><td>Set Notification Settings</td><td>Set Notification Settings. These change the TvOverlay settings of every targeted TV endpoint and stay in effect until changed again.</td><td>Display Notifications, Display Fixed Notifications, Layout Name, Notification Duration, Fixed Notification Visibility</td></tr></table>
+<div class="note"><b class="t">Note: badges and the clock</b><br>
+Out of the box, TvOverlay shows badges at the same visibility as its clock. So if <b>Set Overlay</b> sets <b>Clock Visibility</b> to 0, badges disappear too.
+To hide the clock but keep badges, use <b>Set Notification Settings</b> with:
+<ul><li><b>Display Fixed Notifications</b> = On</li>
+<li><b>Fixed Notification Visibility</b> = 95 (or any value above 0)</li></ul>
+Badges then keep their own visibility, whatever the clock is set to.</div>
+<h3>Diagnostics</h3>
+<p>Turns on extra information for fault-finding.</p>
+<table><tr><th>Property</th><th>Description</th></tr>
+<tr><td>Debug Mode</td><td><i>Print</i> = Lua Output window, <i>Log</i> = Control4 log. Turns itself off after 8 hours.</td></tr></table>
+
+<hr><h2>Profiles</h2>
+<p>A profile is a notification (or setting) prepared once in the <b>Profile Editor</b> and sent to many TV endpoints with one simple command.</p>
+<ul>
+<li><b>Sending:</b> in Programming choose <b>Send Profile</b> (the first Device Specific Command) and enter the profile number.</li>
+<li><b>Badges:</b> a Fixed profile's corner badge is removed with <b>Clear Profile Badge</b> (same number). This only clears the badge from the TV endpoints - the profile itself is kept.</li>
+<li><b>Cameras:</b> Camera profiles use each member room driver's own <b>Camera Snapshots</b> properties (Default Vendor, Encode the Image to Base64?, Address Method and Login Method).
+<i>Use Default</i> in Camera Vendor means each member room driver's own <b>Default Vendor</b>. For cameras not in the project fill in Snapshot URL / Stream URL
+(a login can be written into it: <code>http://USER:PASS@host/snapshot.jpg</code>).</li>
+<li><b>Storage:</b> profiles are stored in the controller and survive reboots and driver updates. A profile number above <b>Number of Profiles</b>, or one not yet set up, sends nothing and writes a line to the log.</li>
+<li><b>Older profiles:</b> profiles made with earlier versions (hex colours) load as <i>Custom</i> with the colour already picked.</li>
+</ul>
+<h3>Managing profiles (Actions tab)</h3>
+<p>Copy and delete profiles without retyping them. The result of each press is shown in <b>Profile Status</b>; Composer may only refresh the page when you click away from the driver and back.</p>
+<table><tr><th>Button</th><th>What it does</th></tr>
+<tr><td>Copy Profile Being Edited To Next Empty Slot</td><td>Copies the profile into the first empty profile number, names it "... (copy)", gives it its own notification ID and opens it in the editor.
+If that number is above <b>Number of Profiles</b>, <b>Number of Profiles</b> is raised to include it.</td></tr>
+<tr><td>Delete Profile Being Edited (press twice)</td><td>Erases the profile selected in <b>Profile to Edit</b> (its summary returns to "(not set up)"). Press twice within 10 seconds -
+the first press only arms it and <b>Profile Status</b> shows "Press again within 10 s to delete Profile N (Name)".</td></tr>
+<tr><td>Delete All Profiles (press twice)</td><td>Erases every profile. Press twice within 10 seconds.</td></tr>
+<tr><td>Refresh Camera List</td><td>Rebuilds the <b>Camera</b> list of the Profile Editor. The list is built when the Controller starts,
+so press this after adding a camera driver to the project. (The TV Notifications page always lists the current cameras.)</td></tr></table>
+
+<hr><h2>Events, variables and conditionals</h2>
+<p>Use these in programming to react to messages, badges and TV endpoints going online or offline.</p>
+<table><tr><th>Variable</th><th>Meaning</th></tr>
+<tr><td>MEMBERS_BOUND</td><td>Number of members with a room driver connected</td></tr>
+<tr><td>MEMBERS_ONLINE</td><td>Number of those that are online</td></tr>
+<tr><td>ALL_ONLINE</td><td>1 when every connected member is online</td></tr>
+<tr><td>LAST_CHANGED_MEMBER</td><td>Name of the member that last went online / offline</td></tr>
+<tr><td>LAST_PROFILE</td><td>Profile number of the last message sent (0 = not a profile)</td></tr>
+<tr><td>LAST_SOURCE</td><td>Where the last message came from: Page or Programming</td></tr>
+<tr><td>LAST_TYPE</td><td>Notification, Alert, Camera or Badge</td></tr>
+<tr><td>LAST_TITLE / LAST_MESSAGE</td><td>Title and message of the last message (time and date tokens filled in)</td></tr>
+<tr><td>LAST_TARGETS</td><td>Where the last message went, for example All TVs or Upstairs</td></tr>
+<tr><td>LAST_BADGE_PROFILE</td><td>Profile number of the last badge shown, cleared or expired</td></tr></table>
+<p>The LAST_ variables are set just before the event fires, keep their value until the next one, and survive a restart.</p>
+<table><tr><th>Event</th><th>Fires when</th></tr>
+<tr><td>Member Online / Member Offline</td><td>A member's status changes (not for the first reading after start-up)</td></tr>
+<tr><td>All Members Online / Not All Members Online</td><td>The "every connected member is online" state changes</td></tr>
+<tr><td>Message Sent</td><td>A Notification, Alert, Camera or Badge message is sent: from the TV Notifications page, by a profile or by programming.
+If programming started by Message Sent sends another message straight away, that message does not fire Message Sent again (so it cannot loop).</td></tr>
+<tr><td>Badge Shown / Badge Cleared</td><td>A profile's badge goes on screen / comes off (cleared by hand, from the page, by programming or on expiry)</td></tr>
+<tr><td>Badge Expired</td><td>A profile's badge ran out of time (Badge Cleared fires too)</td></tr></table>
+<table><tr><th>Conditional</th><th>Use</th></tr><tr><td>Last profile sent</td><td>If last profile sent [=] [n] (0 = the last message was not a profile)</td></tr><tr><td>Last badge profile</td><td>If last badge profile [=] [n] (the profile of the last Badge Shown / Cleared / Expired)</td></tr><tr><td>Online TVs</td><td>If online TVs [&ge;] [n]</td></tr><tr><td>Online member</td><td>If online member [=] [Member 1-12] (&ne; = that member is not online)</td></tr><tr><td>TVs</td><td>If TVs [=] [All online / Not all online]</td></tr><tr><td>Badge on screen from</td><td>If badge on screen from [=] [Profile 1-20] (&ne; = that profile's badge is not on screen)</td></tr></table>
+<p>Every conditional is also on the <b>Loops</b> tab, as <i>While ...</i>.</p>
+
+<hr><h2>TV Notifications page (Experience Button)</h2>
+<p>Selecting the Controller's button in a room Navigator opens the <b>TV Notifications</b> page: a simple front end for sending instant messages to the TV endpoints,
+or saving them as profiles to use again. It is stored in this driver and served by the controller itself, so no extra network port is opened.</p>
+<h3>Simple mode</h3>
+<p>For everyone: choose All TVs or a subgroup, then tap a <b>quick message</b> (every profile that is set up appears as a tile - its targets decide which TV endpoints get it),
+or type a message and press Send (a plain notification with the default style).</p>
+<h3>Advanced mode</h3>
+<p>Tick individual TV endpoints (with their online status; offline ones cannot be ticked) or pick a group, then send a Notification, Alert, Camera popup
+(camera and Snapshot / Stream / both) or a Badge that stays on screen (optionally removed after a number of seconds). It also shows <b>On screen now</b> - the badges sent from
+the page or by Fixed profiles, each with a Clear button - and the 20 most recent sends. Results show how many TV endpoints a message was sent to; whether each one displayed it is not reported back.</p>
+<p><b>Save as profile</b> (under Send) stores the message as a Controller profile: enter a <b>Profile name</b> (filled in from the Title or Message) and choose
+<b>Save to</b> - the next empty slot, or an existing profile to replace (tap Save twice to confirm a replacement). Type, ticked TV endpoints, alert type, title, message, camera and Show,
+corner, duration and the badge's Remove after are saved; everything else stays at its default and can be refined in the Profile Editor. A profile targets all TVs, one TV or
+one subgroup, so the ticked TV endpoints must be one of those (offline ones may be left out); any other mix is refused. If the next empty slot is above <b>Number of Profiles</b>,
+that number is raised automatically. The new profile appears in Quick messages and in the Profile summaries straight away.</p>
+<p>The page remembers which mode you used last. It is updated by the Controller whenever something it shows changes (a TV endpoint going online or offline, a badge added, cleared or expired, a send, a profile change),
+and asks for the latest state when it is opened or comes back on screen. History and the badge list are kept in memory, so a controller restart clears them.</p>
+
+<hr><h2>Programming commands</h2>
+<p>In <b>Programming &rarr; Device Actions &rarr; TvNotify Controller</b>. <b>Send Profile</b> and <b>Clear Profile Badge</b> take a single profile number.
+Every other command's line in the Script screen is a short summary made from its <b>Description</b> field and its target,
+for example <i>Send Notification on TvNotify Controller to Subgroup 1: "Doorbell" (Title: Front door)</i>.</p>
+<div class="note"><b class="t">Note:</b><br>
+<b>Description</b> is only a label for the Script screen - it is not sent to the TV endpoints. Without it, Composer would list every parameter of the command in the Script line, most of them empty.
+<b>Send Profile</b> and <b>Clear Profile Badge</b> deliberately have no Description text box, to keep them quick to open.</div>
+<p><b>Targets:</b> All Members, Member 1 - 12, or Subgroup 1 - 6. Composer's list always shows the numbers, so check the <b>Subgroup N Name</b> properties to see which is which.
+A target with no connected member (or an empty / unknown subgroup) sends nothing and writes a line to the log.</p>
+<p><b>Tokens:</b> Title, Message, Source and Fixed Message accept <code>{TIME}</code> <code>{TIME12}</code> <code>{DATE}</code> <code>{DAY}</code> <code>{DATETIME}</code> <code>{DEVICE}</code>, replaced by each room driver when the command runs.<br>
+<b>Cameras:</b> for Send Camera Notification each member room driver does the camera lookup and image fetch itself, using its own <b>Camera Snapshots</b> properties;
+Output, Camera Vendor, Snapshot URL and Stream URL are passed to every member.<br>
+<b>Room driver only:</b> Set Settings, Set MQTT, Send Raw JSON and Dump Camera Info are on each room driver.</p>
+<h3>Send Notification</h3><p>Show a popup notification on the TV</p><table><tr><th>Parameter</th><th>Values</th><th>What it does</th></tr><tr><td>Description</td><td>Text</td><td>A label for the Script screen only. It is not sent to the TV.</td></tr><tr><td>Targets</td><td>All Members, Member 1, Member 2, Member 3, Member 4, Member 5, Member 6, Member 7, Member 8, Member 9, Member 10, Member 11, Member 12, Subgroup 1, Subgroup 2, Subgroup 3, Subgroup 4, Subgroup 5, Subgroup 6</td><td>Which TVs receive the command: all bound members, one member, or a named subgroup.</td></tr><tr><td>Title</td><td>Text</td><td>Main (top) line of the popup. Accepts tokens such as {TIME} and {DATE}.</td></tr><tr><td>Message</td><td>Text</td><td>Second line of the popup (or the text of a fixed badge). Accepts tokens.</td></tr><tr><td>Source</td><td>Text</td><td>Small extra line, for example where the message came from. Empty = the Default Source property. Accepts tokens.</td></tr><tr><td>Image</td><td>Text</td><td>Picture shown in the popup: an mdi: icon name (mdi:doorbell), an image URL, or Base64 image data.</td></tr><tr><td>Video URL</td><td>Text</td><td>Live video or stream shown in the popup: RTSP, HLS, DASH or SmoothStreaming (TvOverlay 1.0.2 or later). The TV opens it itself.</td></tr><tr><td>Large Icon</td><td>Text</td><td>Large icon beside the text: an mdi: icon name, an image URL or Base64 image data.</td></tr><tr><td>Small Icon</td><td>Text</td><td>Small icon beside the title: an mdi: icon name, an image URL or Base64 image data.</td></tr><tr><td>Small Icon Color</td><td>Use TV Default, Custom</td><td>Use TV Default = the room driver's Default Small Icon Color property. Custom = the colour picked in Small Icon Custom Color. (In a Controller profile: hex, e.g. #03A9F4; empty = the TV default.)</td></tr><tr><td>Small Icon Custom Color</td><td>Colour picker (starts at 3,169,244)</td><td>Colour picker for the small icon tint, used when Small Icon Color is Custom.</td></tr><tr><td>Corner</td><td>Use Default, Bottom Left, Bottom Right, Top Left, Top Right</td><td>Where on screen the popup appears. Use Default = the Default Corner property (or TvOverlay's own hot-corner setting).</td></tr><tr><td>Duration (sec)</td><td>0 to 3600</td><td>How many seconds the popup stays on screen. 0 = the Default Duration property (or TvOverlay's own setting).</td></tr><tr><td>Notification ID</td><td>Text</td><td>Optional. Sending again with the same ID replaces the popup instead of adding another. Empty = a new popup each time.</td></tr></table><h3>Send Alert</h3><p>Show a popup using a ready-made icon + colour preset</p><table><tr><th>Parameter</th><th>Values</th><th>What it does</th></tr><tr><td>Description</td><td>Text</td><td>A label for the Script screen only. It is not sent to the TV.</td></tr><tr><td>Targets</td><td>All Members, Member 1, Member 2, Member 3, Member 4, Member 5, Member 6, Member 7, Member 8, Member 9, Member 10, Member 11, Member 12, Subgroup 1, Subgroup 2, Subgroup 3, Subgroup 4, Subgroup 5, Subgroup 6</td><td>Which TVs receive the command: all bound members, one member, or a named subgroup.</td></tr><tr><td>Alert Type</td><td>Information, Success, Warning, Error, Doorbell, Motion, Security, Fire / Smoke, Water Leak, Door Open, Garage, Phone Call, Package, Reminder</td><td>Ready-made icon and colour for the alert (for example Doorbell, Motion, Fire / Smoke).</td></tr><tr><td>Title</td><td>Text</td><td>Main (top) line of the popup. Accepts tokens such as {TIME} and {DATE}.</td></tr><tr><td>Message</td><td>Text</td><td>Second line of the popup (or the text of a fixed badge). Accepts tokens.</td></tr><tr><td>Corner</td><td>Use Default, Bottom Left, Bottom Right, Top Left, Top Right</td><td>Where on screen the popup appears. Use Default = the Default Corner property (or TvOverlay's own hot-corner setting).</td></tr><tr><td>Duration (sec)</td><td>0 to 3600</td><td>How many seconds the popup stays on screen. 0 = the Default Duration property (or TvOverlay's own setting).</td></tr><tr><td>Notification ID</td><td>Text</td><td>Optional. Sending again with the same ID replaces the popup instead of adding another. Empty = a new popup each time.</td></tr></table><h3>Send Camera Notification</h3><p>Popup with a camera snapshot and / or live stream. Pick the camera and the Output; the driver builds the addresses. Snapshot URL / Stream URL are for cameras not on the vendor list</p><table><tr><th>Parameter</th><th>Values</th><th>What it does</th></tr><tr><td>Description</td><td>Text</td><td>A label for the Script screen only. It is not sent to the TV.</td></tr><tr><td>Targets</td><td>All Members, Member 1, Member 2, Member 3, Member 4, Member 5, Member 6, Member 7, Member 8, Member 9, Member 10, Member 11, Member 12, Subgroup 1, Subgroup 2, Subgroup 3, Subgroup 4, Subgroup 5, Subgroup 6</td><td>Which TVs receive the command: all bound members, one member, or a named subgroup.</td></tr><tr><td>Title</td><td>Text</td><td>Main (top) line of the popup. Accepts tokens such as {TIME} and {DATE}.</td></tr><tr><td>Message</td><td>Text</td><td>Second line of the popup (or the text of a fixed badge). Accepts tokens.</td></tr><tr><td>Camera</td><td>Device picker (cameras only)</td><td>The camera to show. Its NVR connection and channel are found automatically.</td></tr><tr><td>Output</td><td>Snapshot, Stream, Snapshot + Stream</td><td>What is built from the Camera: Snapshot (still image), Stream (live video) or both.</td></tr><tr><td>Camera Vendor</td><td>Use Default, Auto Detect, Hikvision NVR, Hikvision Camera, Dahua / Amcrest, Foscam, Reolink, Axis</td><td>How the camera's addresses are built. Use Default = the Default Vendor property. Auto Detect = recognised from the camera / NVR driver.</td></tr><tr><td>NVR/Camera Username</td><td>Text</td><td>Login for this camera, for snapshots and streams. Empty = the default-authentication properties.</td></tr><tr><td>NVR/Camera Password</td><td>Text</td><td>Password for the login above.</td></tr><tr><td>Snapshot URL</td><td>Text</td><td>Full snapshot address of a camera not on the vendor list. When filled in it is always used.</td></tr><tr><td>Stream URL</td><td>Text</td><td>Full stream address (for example rtsp://...) of a camera not on the vendor list. When filled in it is always used.</td></tr><tr><td>Corner</td><td>Use Default, Bottom Left, Bottom Right, Top Left, Top Right</td><td>Where on screen the popup appears. Use Default = the Default Corner property (or TvOverlay's own hot-corner setting).</td></tr><tr><td>Duration (sec)</td><td>0 to 3600</td><td>How many seconds the popup stays on screen. 0 = the Default Duration property (or TvOverlay's own setting).</td></tr><tr><td>Notification ID</td><td>Text</td><td>Optional. Sending again with the same ID replaces the popup instead of adding another. Empty = a new popup each time.</td></tr></table><h3>Send Fixed Notification</h3><p>Show (or update) a persistent corner badge. Re-use the same ID to update it</p><table><tr><th>Parameter</th><th>Values</th><th>What it does</th></tr><tr><td>Description</td><td>Text</td><td>A label for the Script screen only. It is not sent to the TV.</td></tr><tr><td>Targets</td><td>All Members, Member 1, Member 2, Member 3, Member 4, Member 5, Member 6, Member 7, Member 8, Member 9, Member 10, Member 11, Member 12, Subgroup 1, Subgroup 2, Subgroup 3, Subgroup 4, Subgroup 5, Subgroup 6</td><td>Which TVs receive the command: all bound members, one member, or a named subgroup.</td></tr><tr><td>Fixed Notification ID</td><td>Text</td><td>Name of the badge. Sending again with the same ID updates it; also used to remove it. Empty = a new ID is made up.</td></tr><tr><td>Message</td><td>Text</td><td>Second line of the popup (or the text of a fixed badge). Accepts tokens.</td></tr><tr><td>Icon</td><td>Text</td><td>Badge icon: an mdi: icon name, an image URL or Base64 image data.</td></tr><tr><td>Message Color</td><td>Text</td><td>Badge text colour, hex (#FFFFFF). Empty = white.</td></tr><tr><td>Icon Color</td><td>Text</td><td>Badge icon tint, hex. Empty = no tint.</td></tr><tr><td>Border Color</td><td>Text</td><td>Badge border colour, hex. Empty = white.</td></tr><tr><td>Background Color</td><td>Text</td><td>Badge background colour, hex with optional transparency (#66000000 = 40% black, the default).</td></tr><tr><td>Shape</td><td>Default, Rounded, Circle, Rectangular</td><td>Badge frame: Rounded (TvOverlay's default), Circle or Rectangular.</td></tr><tr><td>Expiration</td><td>Text</td><td>When the badge removes itself: seconds (300), a duration (1h30m, 2d) or an epoch time (1695693410). Empty = stays until removed.</td></tr></table><h3>Remove Fixed Notification</h3><p>Remove a fixed notification by its ID</p><table><tr><th>Parameter</th><th>Values</th><th>What it does</th></tr><tr><td>Description</td><td>Text</td><td>A label for the Script screen only. It is not sent to the TV.</td></tr><tr><td>Targets</td><td>All Members, Member 1, Member 2, Member 3, Member 4, Member 5, Member 6, Member 7, Member 8, Member 9, Member 10, Member 11, Member 12, Subgroup 1, Subgroup 2, Subgroup 3, Subgroup 4, Subgroup 5, Subgroup 6</td><td>Which TVs receive the command: all bound members, one member, or a named subgroup.</td></tr><tr><td>Fixed Notification ID</td><td>Text</td><td>Name of the badge. Sending again with the same ID updates it; also used to remove it. Empty = a new ID is made up.</td></tr></table><h3>Remove All Fixed Notifications</h3><p>Remove every fixed notification this driver has sent</p><table><tr><th>Parameter</th><th>Values</th><th>What it does</th></tr><tr><td>Description</td><td>Text</td><td>A label for the Script screen only. It is not sent to the TV.</td></tr><tr><td>Targets</td><td>All Members, Member 1, Member 2, Member 3, Member 4, Member 5, Member 6, Member 7, Member 8, Member 9, Member 10, Member 11, Member 12, Subgroup 1, Subgroup 2, Subgroup 3, Subgroup 4, Subgroup 5, Subgroup 6</td><td>Which TVs receive the command: all bound members, one member, or a named subgroup.</td></tr></table><h3>Set Overlay</h3><p>Change overlay background / clock visibility and hot corner (-1 or Unchanged = leave as is)</p><table><tr><th>Parameter</th><th>Values</th><th>What it does</th></tr><tr><td>Description</td><td>Text</td><td>A label for the Script screen only. It is not sent to the TV.</td></tr><tr><td>Targets</td><td>All Members, Member 1, Member 2, Member 3, Member 4, Member 5, Member 6, Member 7, Member 8, Member 9, Member 10, Member 11, Member 12, Subgroup 1, Subgroup 2, Subgroup 3, Subgroup 4, Subgroup 5, Subgroup 6</td><td>Which TVs receive the command: all bound members, one member, or a named subgroup.</td></tr><tr><td>Background Visibility</td><td>-1 to 95</td><td>Darkness of the full-screen background overlay, 0 (off) to 95. -1 = leave unchanged.</td></tr><tr><td>Clock Visibility</td><td>-1 to 95</td><td>Visibility of TvOverlay's clock, 0 (hidden) to 95. -1 = leave unchanged. At 0, badges are hidden too unless Fixed Notification Visibility is set.</td></tr><tr><td>Hot Corner</td><td>Unchanged, Bottom Left, Bottom Right, Top Left, Top Right</td><td>Default corner for popups and the clock. Unchanged = leave as is.</td></tr></table><h3>Set Notification Settings</h3><p>Change TvOverlay notification behaviour (-1/-2/Unchanged = leave as is)</p><table><tr><th>Parameter</th><th>Values</th><th>What it does</th></tr><tr><td>Description</td><td>Text</td><td>A label for the Script screen only. It is not sent to the TV.</td></tr><tr><td>Targets</td><td>All Members, Member 1, Member 2, Member 3, Member 4, Member 5, Member 6, Member 7, Member 8, Member 9, Member 10, Member 11, Member 12, Subgroup 1, Subgroup 2, Subgroup 3, Subgroup 4, Subgroup 5, Subgroup 6</td><td>Which TVs receive the command: all bound members, one member, or a named subgroup.</td></tr><tr><td>Display Notifications</td><td>Unchanged, On, Off</td><td>Turn popups on or off on that TV.</td></tr><tr><td>Display Fixed Notifications</td><td>Unchanged, On, Off</td><td>Turn fixed badges on or off on that TV.</td></tr><tr><td>Layout Name</td><td>Text</td><td>Name of the popup layout to use, as listed in the TvOverlay app. Empty = leave unchanged.</td></tr><tr><td>Notification Duration (sec)</td><td>-1 to 3600</td><td>TvOverlay's own default popup duration. -1 = leave unchanged.</td></tr><tr><td>Fixed Notification Visibility</td><td>-2 to 95</td><td>Visibility of badges, 0 to 95. -1 = same as the clock (TvOverlay's default). -2 = leave unchanged.</td></tr></table>
+
+<hr><h2>Actions</h2>
+<p>Buttons on the Actions tab. Most are forwarded to every connected room driver; the profile and camera-list buttons work on the Controller itself (see <i>Managing profiles</i>).</p>
+<table><tr><th>Button</th><th>What it does</th></tr>
+<tr><td>Send Test Notification To All</td><td>Sends a test popup to every member.</td></tr>
+<tr><td>Send Test Fixed Notification To All<br>Remove Test Fixed Notification From All</td><td>Shows / removes a test badge on every member.</td></tr>
+<tr><td>Remove All Fixed Notifications</td><td>Removes every badge the members have shown.</td></tr>
+<tr><td>Overlay Background Off</td><td>Turns the overlay background dimming off on every member.</td></tr>
+<tr><td>Repeat Last Notification On All</td><td>Each member repeats its last notification.</td></tr>
+<tr><td>Check Connection Of All</td><td>Each member checks that its TV endpoint answers.</td></tr></table>
+<p>Dump / diagnostic actions are on each room driver.</p>
+<hr><h2>Licence</h2>
+<p>Copyright &copy; 2026 popolou. TvNotify is free software, released under the
+<b>GNU General Public License v3.0</b> (GPL-3.0): you may use, change and share it, and any changed version you share must
+also be released under GPL-3.0 with its source. It comes with no warranty. Source and updates: github.com/ThePopolou/TvNotify</p>
+<hr><h2>Changelog</h2>
+<ul><li><b>v0.1.0</b> - Initial release</li><li><b>v0.1.1</b> - Status and the TV Notifications page show when a driver update is available</li><li><b>v0.1.2</b> - New programming events added including new "LAST_" variables and options for Conditionals and Loops.</li></ul>
+</body></html>
